@@ -5,9 +5,14 @@ import path from "node:path";
 export default defineConfig({
   plugins: [react()],
   test: {
+    pool: "threads",
     environment: "node",
     setupFiles: ["./vitest.setup.ts"],
-    environmentMatchGlobs: [["**/*.tsx", "jsdom"]],
   },
-  resolve: { alias: { "@": path.resolve(__dirname, "src") } },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+      "server-only": path.resolve(__dirname, "vitest.server-only.mock.ts"),
+    },
+  },
 });
