@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { DistrictMap } from "@/components/home/DistrictMap";
+import { PlaceImage } from "@/components/media/PlaceImage";
 
 const featureCards = [
   {
@@ -22,6 +23,13 @@ const featureCards = [
     detail: "เดินทางถึงสถานที่จริงเพื่อปลดล็อกของสะสม 3D และคูปองเดโมในเส้นทาง",
     href: "/watts-up",
   },
+  {
+    title: "อีเวนต์",
+    eyebrow: "มางาน แล้วอยู่ต่อ",
+    detail:
+      "ปฏิทินงานเทศกาลทั้งปีของสิงห์บุรี กดวางแผนรอบงานแล้วต่อทริปวัด-ตลาด-ของกินใกล้งานได้ทันที",
+    href: "/events",
+  },
 ];
 
 export default function Home() {
@@ -36,15 +44,16 @@ export default function Home() {
       <section className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="space-y-6">
           <p className="font-head text-sm font-semibold uppercase tracking-[0.3em] text-gold">
-            Sing Buri District Journey
+            แผ่นดินวีรชนบางระจัน
           </p>
           <div className="space-y-4">
             <h1 className="font-display text-5xl leading-tight text-clay-deep sm:text-6xl lg:text-7xl">
-              เลือกอำเภอ แล้วเริ่มเดินทางแบบสิงห์บุรี
+              สิงห์บุรี ไม่ใช่ทางผ่าน — แต่คือปลายทาง
             </h1>
             <p className="max-w-xl text-lg leading-8 text-clay-deep/75">
-              หน้าแรกใหม่ชวนเริ่มจากแผนที่ 6 อำเภอ แตะพื้นที่ที่สนใจแล้วไปต่อยัง
-              Roadmap เพื่อค้นหาวัด ตลาด เรื่องเล่า และจุดเช็คอินในทริปเดียว
+              จากสมรภูมิวีรชนบางระจัน สู่พระนอนองค์ใหญ่ ปลาแม่ลาริมเจ้าพระยา
+              และงานบุญทั้งปี — เราเชื่อมทุกจุดแข็งให้เป็นทริปเดียวที่ทำให้คุณอยากค้างคืน
+              ไม่ใช่แค่ขับรถผ่าน
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -63,12 +72,20 @@ export default function Home() {
           </div>
         </div>
 
-        <DistrictMap onSelect={openDistrict} />
+        <div className="space-y-4">
+          <DistrictMap onSelect={openDistrict} />
+          <PlaceImage
+            src="/images/hero-bangrachan.jpg"
+            name="อนุสาวรีย์วีรชนค่ายบางระจัน"
+            className="rounded-[2rem] border border-clay/15 shadow-2xl shadow-clay-deep/10"
+            eyebrow="Bang Rachan"
+          />
+        </div>
       </section>
 
       <section
         aria-label="ฟีเจอร์หลัก"
-        className="mx-auto mt-12 grid max-w-6xl gap-4 md:grid-cols-3"
+        className="mx-auto mt-12 grid max-w-6xl gap-4 md:grid-cols-2 lg:grid-cols-4"
       >
         {featureCards.map((feature) => (
           <a
