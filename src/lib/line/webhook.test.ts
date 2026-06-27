@@ -1,4 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
+import { beforeEach, describe, it, expect, vi } from "vitest";
+
+beforeEach(() => {
+  delete process.env.LINE_MESSAGING_ACCESS_TOKEN;
+});
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { handleStatusReport } from "@/lib/line/webhook";
 
