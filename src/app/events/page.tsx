@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useRouter } from "next/navigation";
 import { EVENTS } from "@/lib/data/events";
 import { EventCard } from "@/components/events/EventCard";
@@ -14,10 +14,10 @@ export default function EventsPage() {
           Event → Destination
         </p>
         <h1 className="mt-3 font-display text-5xl leading-tight text-clay-deep sm:text-6xl">
-          ปฏิทินงานสิงห์บุรี — มางาน แล้วอยู่ต่อ
+          ปฏิทินงานสิงห์บุรี มางาน แล้วอยู่ต่อ
         </h1>
         <p className="mt-4 max-w-2xl text-lg leading-8 text-clay-deep/75">
-          ทุกงานไม่ได้จบแค่ 2–3 วัน — กด“วางแผนรอบงานนี้” แล้วให้ AI ต่อทริปวันต่อ
+          ทุกงานไม่ได้จบแค่ 2-3 วัน  กด“วางแผนรอบงานนี้” แล้วให้ AI ต่อทริปวันต่อ
           วันและร้านอาหารใกล้งานให้คุณ เพลี่ยนอีเวนต์ให้เป็นเหตุผลที่ต้องค้างคืน
         </p>
 

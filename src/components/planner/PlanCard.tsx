@@ -35,7 +35,7 @@ export function PlanCard({
                 <span className="font-head font-bold text-gold">
                   {s.suggested_time}
                 </span>{" "}
-                {s.name} — {s.reason}
+                {s.name}: {s.reason}
               </li>
             ))}
         </ul>
