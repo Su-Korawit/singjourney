@@ -59,6 +59,14 @@ body {
   font-family: var(--font-body);
 }
 
+.roadmap-popup__image {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  border-radius: 0.9rem;
+  margin-bottom: 0.65rem;
+  object-fit: cover;
+}
+
 .roadmap-popup__title {
   margin: 0;
   font-family: var(--font-head);

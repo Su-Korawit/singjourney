@@ -1,40 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
 import { MapView } from "@/components/map/MapView";
+import { PlaceImage } from "@/components/media/PlaceImage";
 import { StopList } from "@/components/planner/StopList";
 import { ItemViewer } from "@/components/items/ItemViewer";
+import { PLACES, placeById } from "@/lib/data/places";
 import { orderStopsByProximity } from "@/lib/route/geo";
 import { createBrowserClient } from "@/lib/supabase/client";
 import type { Item3D, PlanStop } from "@/lib/types";
 
 type CheckinModalState = "awarded" | "duplicate" | "empty" | null;
 
-const DEMO: PlanStop[] = [
-  {
-    place_id: "1",
-    name: "วัดพระนอนจักรสีห์",
-    reason: "",
-    suggested_time: "09:00",
-    lat: 14.8628,
-    lng: 100.3712,
-  },
-  {
-    place_id: "2",
-    name: "อนุสาวรีย์ค่ายบางระจัน",
-    reason: "",
-    suggested_time: "11:00",
-    lat: 14.9389,
-    lng: 100.2589,
-  },
-  {
-    place_id: "3",
-    name: "ตลาดไทยย้อนยุค",
-    reason: "",
-    suggested_time: "13:00",
-    lat: 15.005,
-    lng: 100.33,
-  },
-];
+const DEFAULT_TIMES = ["09:00", "10:30", "12:00", "14:00", "15:30"];
+const DEMO: PlanStop[] = PLACES.slice(0, 5).map((place, index) => ({
+  place_id: place.id,
+  name: place.name,
+  reason: place.description,
+  suggested_time: DEFAULT_TIMES[index] ?? "16:00",
+  lat: place.lat,
+  lng: place.lng,
+}));
 
 export default function MapPage() {
   const [stops, setStops] = useState<PlanStop[]>(DEMO);
@@ -130,22 +115,36 @@ export default function MapPage() {
         </button>
         <StopList stops={stops} onReorder={setStops} />
         <ul className="mt-4 flex flex-col gap-2">
-          {stops.map((s) => (
-            <li
-              key={s.place_id}
-              className="flex items-center justify-between gap-3 rounded-card border border-clay/10 bg-paper/70 px-3 py-2"
-            >
-              <span className="text-sm font-medium text-clay-deep">{s.name}</span>
-              <button
-                type="button"
-                disabled={checkingIn === s.place_id}
-                onClick={() => checkIn(s.place_id)}
-                className="rounded-full border border-clay/20 px-3 py-1 font-head text-xs font-bold text-clay transition hover:border-clay hover:bg-clay hover:text-rice disabled:opacity-50"
+          {stops.map((s) => {
+            const place = placeById(s.place_id);
+            return (
+              <li
+                key={s.place_id}
+                className="flex items-center justify-between gap-3 rounded-card border border-clay/10 bg-paper/70 px-3 py-2"
               >
-                เช็คอิน
-              </button>
-            </li>
-          ))}
+                <div className="flex min-w-0 items-center gap-3">
+                  <PlaceImage
+                    src={place?.image_url ?? null}
+                    name={s.name}
+                    ratio="4/3"
+                    className="w-16 shrink-0 rounded-2xl"
+                    eyebrow="Roadmap"
+                  />
+                  <span className="text-sm font-medium text-clay-deep">
+                    {s.name}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  disabled={checkingIn === s.place_id}
+                  onClick={() => checkIn(s.place_id)}
+                  className="rounded-full border border-clay/20 px-3 py-1 font-head text-xs font-bold text-clay transition hover:border-clay hover:bg-clay hover:text-rice disabled:opacity-50"
+                >
+                  เช็คอิน
+                </button>
+              </li>
+            );
+          })}
         </ul>
       </section>
 

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
+import { placeById } from "@/lib/data/places";
 import type { PlanStop } from "@/lib/types";
 
 const SINGBURI: [number, number] = [100.4, 14.89];
@@ -41,6 +42,17 @@ function createPopupContent({
 }) {
   const content = document.createElement("div");
   content.className = "roadmap-popup";
+  const place = placeById(stop.place_id);
+
+  if (place?.image_url) {
+    const image = document.createElement("img");
+    image.src = place.image_url;
+    image.alt = stop.name;
+    image.loading = "lazy";
+    image.className = "roadmap-popup__image";
+    image.addEventListener("error", () => image.remove());
+    content.appendChild(image);
+  }
 
   const title = document.createElement("p");
   title.className = "roadmap-popup__title";
