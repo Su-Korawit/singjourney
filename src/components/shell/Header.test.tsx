@@ -19,6 +19,10 @@ describe("Header", () => {
       "href",
       "/",
     );
+    expect(screen.getByRole("link", { name: "อีเวนต์" })).toHaveAttribute(
+      "href",
+      "/events",
+    );
     expect(screen.getByRole("link", { name: "วางแผน" })).toHaveAttribute(
       "href",
       "/plan",

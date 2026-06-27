@@ -4,6 +4,7 @@ import { useState } from "react";
 
 const navigationItems = [
   { href: "/", label: "หน้าแรก" },
+  { href: "/events", label: "อีเวนต์" },
   { href: "/plan", label: "วางแผน" },
   { href: "/map", label: "Roadmap" },
   { href: "/watts-up", label: "Watt's Up!" },
