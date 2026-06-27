@@ -2,6 +2,9 @@
 import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
 import { placeById } from "@/lib/data/places";
+import { getPlaceStatus } from "@/lib/demo/showcase";
+import { buildRouteCoordinates } from "@/lib/demo/routeCoordinates";
+import type { RouteFeature } from "@/lib/demo/routeCoordinates";
 import type { PlanStop } from "@/lib/types";
 
 const SINGBURI: [number, number] = [100.4, 14.89];
@@ -28,6 +31,17 @@ function createMarkerElement(index: number, hasCheckIn: boolean) {
 
   return element;
 }
+
+const STATUS_LABEL: Record<"open" | "closing" | "closed", string> = {
+  open: "เปิดอยู่",
+  closing: "ใกล้ปิด",
+  closed: "ปิดแล้ว",
+};
+const STATUS_COLOR: Record<"open" | "closing" | "closed", string> = {
+  open: "#16a34a",
+  closing: "#d97706",
+  closed: "#dc2626",
+};
 
 function createPopupContent({
   stop,
@@ -58,6 +72,24 @@ function createPopupContent({
   title.className = "roadmap-popup__title";
   title.textContent = `${index + 1}. ${stop.name}`;
   content.appendChild(title);
+
+  const status = getPlaceStatus(stop.place_id);
+  if (status) {
+    const badge = document.createElement("span");
+    badge.className = "roadmap-popup__status";
+    badge.textContent = STATUS_LABEL[status];
+    badge.style.cssText = `
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:99px;
+      font-size:11px;
+      font-weight:700;
+      color:#fff;
+      background:${STATUS_COLOR[status]};
+      margin-bottom:4px;
+    `;
+    content.appendChild(badge);
+  }
 
   const time = document.createElement("p");
   time.className = "roadmap-popup__time";
@@ -117,7 +149,7 @@ export function MapView({
     const map = mapRef.current;
     if (!map) return;
 
-    const draw = () => {
+    const draw = async () => {
       markersRef.current.forEach((m) => m.remove());
       markersRef.current = [];
 
@@ -141,6 +173,18 @@ export function MapView({
         markersRef.current.push(marker);
       });
 
+      let routeFeature: RouteFeature | null = null;
+      try {
+        const res = await fetch("/demo/roadmap-route.json");
+        if (res.ok) {
+          routeFeature = (await res.json()) as RouteFeature;
+        }
+      } catch {
+        // fallback to straight lines
+      }
+
+      const coordinates = buildRouteCoordinates(stops, routeFeature);
+
       const line = {
         type: "FeatureCollection" as const,
         features:
@@ -150,7 +194,7 @@ export function MapView({
                   type: "Feature" as const,
                   geometry: {
                     type: "LineString" as const,
-                    coordinates: stops.map((s) => [s.lng, s.lat]),
+                    coordinates,
                   },
                   properties: {},
                 },
@@ -184,8 +228,8 @@ export function MapView({
       }
     };
 
-    if (map.isStyleLoaded()) draw();
-    else map.once("load", draw);
+    if (map.isStyleLoaded()) void draw();
+    else map.once("load", () => void draw());
   }, [checkingInPlaceId, onCheckIn, rewardPlaceIds, stops]);
 
   return (

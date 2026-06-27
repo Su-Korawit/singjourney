@@ -300,6 +300,13 @@ const FESTIVAL_STATUSES: FestivalStatus[] = [
   },
 ];
 
+// Maps ROADMAP_STOPS place_id to a live status derived from market/festival data
+const PLACE_STATUS_MAP: Record<string, "open" | "closing" | "closed"> = {
+  p5: MARKET_STATUSES.find((m) => m.id === "market-maela")?.status ?? "open",
+  p6: MARKET_STATUSES.find((m) => m.id === "market-banrachan")?.status ?? "closing",
+  p3: FESTIVAL_STATUSES.find((f) => f.id === "e1")?.status ?? "closing",
+};
+
 export function getShowcasePlans(): ShowcasePlan[] {
   return SHOWCASE_PLANS;
 }
@@ -314,4 +321,11 @@ export function getMarketStatuses(): MarketStatus[] {
 
 export function getFestivalStatuses(): FestivalStatus[] {
   return FESTIVAL_STATUSES;
+}
+
+/** Returns the live status for a roadmap stop, or null if unknown. */
+export function getPlaceStatus(
+  placeId: string,
+): "open" | "closing" | "closed" | null {
+  return PLACE_STATUS_MAP[placeId] ?? null;
 }
