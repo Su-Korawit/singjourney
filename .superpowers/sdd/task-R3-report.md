@@ -114,3 +114,42 @@ Generating static pages using 10 workers (9/9)
 
 - `npm` prints `npm warn Unknown env config "devdir"` before every test/build command. The commands pass, but output is not pristine.
 - One focused Vitest run hit a worker startup timeout before loading tests; the exact rerun passed, and the full suite also passed.
+
+### Review fix: active district styling
+
+**Finding:** Missing active district styling — brief requires `hover/active = gold + ยกเล็กน้อย` but classes only handled hover and focus-visible.
+
+**Fix applied:**
+
+- Added `active:-translate-y-1` on district `<g>` groups (alongside existing hover/focus-visible translate).
+- Added `group-active:fill-gold/75` on district path fill (alongside existing hover/focus-visible gold fill).
+
+**Verification:**
+
+Focused test:
+
+```bash
+npm test -- src/components/home/DistrictMap.test.tsx
+```
+
+Result:
+
+```text
+Test Files  1 passed (1)
+Tests  1 passed (1)
+```
+
+Full suite:
+
+```bash
+npm test
+```
+
+Result:
+
+```text
+Test Files  15 passed (15)
+Tests  31 passed (31)
+```
+
+**Commit:** `fix(ui): add active state to district map zones`

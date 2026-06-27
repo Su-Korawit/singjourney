@@ -88,11 +88,11 @@ export function DistrictMap({ onSelect }: DistrictMapProps) {
                 onSelect(district.name);
               }
             }}
-            className="group cursor-pointer outline-none transition-transform duration-200 hover:-translate-y-1 focus-visible:-translate-y-1"
+            className="group cursor-pointer outline-none transition-transform duration-200 hover:-translate-y-1 active:-translate-y-1 focus-visible:-translate-y-1"
           >
             <path
               d={district.path}
-              className="fill-clay/20 stroke-clay-deep/25 stroke-2 transition-colors duration-200 group-hover:fill-gold/75 group-focus-visible:fill-gold/75"
+              className="fill-clay/20 stroke-clay-deep/25 stroke-2 transition-colors duration-200 group-hover:fill-gold/75 group-active:fill-gold/75 group-focus-visible:fill-gold/75"
             />
             <path
               d={district.path}
