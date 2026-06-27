@@ -103,6 +103,33 @@ Scope เดโม: **AI วางแผนทริป + Map roadmap (ลาก
 
 ---
 
+## 5.1 LINE — Login + แจ้งเตือน/รับแจ้งเปิด-ปิด (ที่เคลมในฟอร์ม → ต้อง build จริง)
+
+> เพิ่มเพราะฟอร์ม/Infographic เคลม "LINE Login + แจ้งเตือนเปิด-ปิดผ่าน LINE OA" ต้องมีแผนทำให้เป็นจริงก่อนส่ง
+
+**A) LINE Login (ยืนยันตัวตน)**
+1. สร้าง LINE Login channel ใน LINE Developers → ได้ `LINE_CHANNEL_ID` / `LINE_CHANNEL_SECRET`
+2. ใช้ Supabase Auth (custom OAuth/OIDC) หรือ route `/api/auth/line/callback` ทำ OAuth2 เอง → แลก code เป็น token → ดึงโปรไฟล์ (`userId`, `displayName`, `pictureUrl`)
+3. upsert ลงตาราง `users` (`line_user_id`, `display_name`, `avatar_url`) → ตั้ง session cookie
+4. key/secret อยู่ฝั่ง server ใน `.env` เท่านั้น
+5. **Fallback เดโม:** ถ้า LINE config ไม่ทัน ใช้ mock user แต่ปุ่ม UI "เข้าสู่ระบบด้วย LINE" ต้องอยู่และ flow ต้องเดินได้
+
+**B) แจ้งเตือนผู้ใช้ผ่าน LINE (Messaging API)**
+1. สร้าง Messaging API channel (LINE OA) → `LINE_CHANNEL_ACCESS_TOKEN`
+2. ผู้ใช้ที่ผูก LINE แล้ว → ระบบ push ข้อความเมื่อสถานที่ "ในแผนของเขา" เปลี่ยนสถานะ (เช่น ปิดกะทันหัน/ปิดถาวร) — trigger จากงาน sync ใน §5
+3. ส่งแบบ batch หลัง sync รอบ cron เพื่อคุมโควต้า/ต้นทุน
+
+**C) รับแจ้งเปิด-ปิดจาก "คนในท้องถิ่น" ผ่าน LINE OA (community-sourced — จุดใหม่)**
+1. เจ้าของร้าน/ตลาด/ชุมชน แอดเป็นเพื่อนกับ LINE OA แล้วส่งสถานะ (เช่น พิมพ์ "ปิดวันนี้ <ชื่อสถานที่>" หรือเลือกผ่าน rich menu/quick reply)
+2. Webhook `/api/line/webhook` รับ event → จับคู่ผู้ส่งกับ `place` (รายชื่อผู้ดูแลที่ verify ไว้ในตาราง `place_reporters`) → เขียน override สถานะลงตาราง `place_status_overrides` (`place_id`, `status`, `note`, `reported_by`, `expires_at`)
+3. ชั้นคำนวณสถานะใน §5 ให้ **override ของชุมชนมาก่อน** ข้อมูลอัตโนมัติของ Google (เพราะคนหน้างานสดกว่า) ภายในช่วง `expires_at`
+4. แสดงป้าย "อัปเดตโดยชุมชน" เพื่อความโปร่งใส
+5. ความปลอดภัย: ตรวจ LINE signature ของ webhook + รับ override เฉพาะผู้ส่งที่ verify แล้ว
+
+**ตารางใหม่ที่ต้องเพิ่มใน Supabase:** `place_reporters`, `place_status_overrides` (ดู §3 — เพิ่มเข้าไป)
+
+---
+
 ## 6. แผนการ build แบบเป็นเฟส (เรียงตาม wow ต่อเวลา)
 
 **Phase 0 — Setup (0.5 วัน)**
@@ -124,12 +151,18 @@ Scope เดโม: **AI วางแผนทริป + Map roadmap (ลาก
 - เช็คอินสำเร็จ → เด้งไอเทม 3D หมุนได้ (model-viewer) → เก็บใน collection
 - ไอเทมคูปอง = consumable (กดใช้แล้ว disabled)
 
-**Phase 4 — Watt's Up! + Auth + ขัดเงา (0.5–1 วัน)**
+**Phase 4 — Watt's Up! + LINE Login + ขัดเงา (0.5–1 วัน)**
 - หมวดสายทำบุญ: ลิสต์วัด + หน้า detail ประวัติวัด/พระดัง
-- LINE Login จริง (ถ้าทัน) ไม่งั้น mock user
+- **LINE Login จริง** (§5.1 A) — ต้องทำให้เดินได้เพราะเคลมในฟอร์ม; fallback mock user เฉพาะกรณีฉุกเฉิน
 - responsive มือถือ + ใส่โลโก้/ธีม
 
+**Phase 5 — LINE แจ้งเตือน + รับแจ้งจากชุมชน (0.5–1 วัน) ← จุดต่างที่เคลมในฟอร์ม**
+- push แจ้งเตือนผู้ใช้ผ่าน Messaging API เมื่อสถานที่ในแผนเปลี่ยนสถานะ (§5.1 B)
+- webhook `/api/line/webhook` รับแจ้งเปิด-ปิดจากผู้ดูแลที่ verify → override สถานะ (§5.1 C)
+- ป้าย "อัปเดตโดยชุมชน" + ให้ override มาก่อนข้อมูลอัตโนมัติ
+
 > เดโมขั้นต่ำที่ขายได้ = Phase 1 + 2 + 3 (Map + AI + ข้อมูลเปิด-ปิดจริง + Check-in 3D)
+> เดโม "ครบตามที่เคลมในฟอร์ม" = + Phase 4 (LINE Login) + Phase 5 (LINE แจ้งเตือน/รับแจ้งชุมชน)
 
 ---
 
@@ -149,3 +182,6 @@ Scope เดโม: **AI วางแผนทริป + Map roadmap (ลาก
 - [ ] Claude API key (เก็บใน .env ฝั่ง server)
 - [ ] Google Places API key + ผูก `google_place_id` ให้แต่ละสถานที่ (เก็บ key ใน .env ฝั่ง server)
 - [ ] Supabase project + LINE Developers channel
+- [ ] LINE Login channel (`LINE_CHANNEL_ID`/`LINE_CHANNEL_SECRET`) + Messaging API channel/LINE OA (`LINE_CHANNEL_ACCESS_TOKEN`) — สำหรับ §5.1
+- [ ] ตาราง `place_reporters` + `place_status_overrides` ใน Supabase (รองรับการแจ้งจากชุมชน)
+- [ ] รายชื่อผู้ดูแลสถานที่ที่ verify แล้ว (เจ้าของร้าน/ตลาด/ชุมชน) สำหรับรับแจ้งผ่าน LINE OA
