@@ -3,9 +3,13 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProfileQuiz } from "@/components/planner/ProfileQuiz";
 import { PlanCard } from "@/components/planner/PlanCard";
+import { ShowcasePlanCard } from "@/components/planner/ShowcasePlanCard";
+import { getShowcasePlans } from "@/lib/demo/showcase";
 import { eventById } from "@/lib/data/events";
 import { placeById } from "@/lib/data/places";
 import type { Plan, SingEvent, UserProfile } from "@/lib/types";
+
+const SHOWCASE_PLANS = getShowcasePlans();
 
 function buildEventContext(event: SingEvent) {
   const anchorPlaceNames = event.anchor_place_ids
@@ -16,7 +20,7 @@ function buildEventContext(event: SingEvent) {
 }
 
 function PlanPageContent() {
-  const [plans, setPlans] = useState<Plan[] | null>(null);
+  const [aiPlans, setAiPlans] = useState<Plan[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -41,9 +45,9 @@ function PlanPageContent() {
       if (!res.ok || !data?.plans) {
         throw new Error(data?.error ?? `AI วางแผนไม่สำเร็จ (${res.status})`);
       }
-      setPlans(data.plans);
+      setAiPlans(data.plans);
     } catch {
-      setError("ขออภัย ระบบวางแผนขัดข้องชั่วคราว กรุณาลองใหม่อีกครั้ง");
+      setError("ขออภัย ระบบวางแผนขัดข้องชั่วคราว แสดงแผนตัวอย่างแทน");
     } finally {
       setLoading(false);
     }
@@ -59,7 +63,7 @@ function PlanPageContent() {
 
   return (
     <main className="mx-auto max-w-3xl p-6">
-      {!plans && anchorEvent && (
+      {!aiPlans && anchorEvent && (
         <div className="mb-5 rounded-card border border-gold/30 bg-rice px-4 py-3">
           <p className="font-head text-xs font-bold uppercase tracking-[0.24em] text-gold">
             วางแผนรอบงาน
@@ -72,16 +76,15 @@ function PlanPageContent() {
           </p>
         </div>
       )}
-      {!plans && error && (
+      {error && (
         <div className="mb-5 rounded-card border border-clay/30 bg-clay/5 px-4 py-3">
           <p className="font-head text-sm font-bold text-clay-deep">{error}</p>
         </div>
       )}
-      {!plans && <ProfileQuiz onComplete={onComplete} />}
       {loading && (
         <div className="mt-5 rounded-card border border-clay/10 bg-rice/85 p-5 shadow-[0_18px_48px_rgba(92,42,30,0.12)]">
           <p className="font-head text-sm font-bold text-clay-deep">
-            AI กำลังวางแผน…
+            AI กำลังวางแผน...
           </p>
           <div className="mt-4 space-y-3">
             <div className="h-4 w-2/3 animate-pulse rounded-full bg-clay/10" />
@@ -90,12 +93,27 @@ function PlanPageContent() {
           </div>
         </div>
       )}
-      {plans && (
+      {aiPlans && !loading && (
         <div className="flex flex-col gap-5">
-          {plans.map((p, i) => (
+          {aiPlans.map((p, i) => (
             <PlanCard key={i} plan={p} onSelect={select} />
           ))}
         </div>
+      )}
+      {!aiPlans && !loading && (
+        <>
+          <div className="flex flex-col gap-5">
+            {SHOWCASE_PLANS.map((plan) => (
+              <ShowcasePlanCard key={plan.id} plan={plan} />
+            ))}
+          </div>
+          <div className="mt-8">
+            <p className="mb-4 font-head text-xs font-bold uppercase tracking-[0.24em] text-gold">
+              สร้างแผนส่วนตัว
+            </p>
+            <ProfileQuiz onComplete={onComplete} />
+          </div>
+        </>
       )}
     </main>
   );
@@ -107,7 +125,9 @@ export default function PlanPage() {
       fallback={
         <main className="mx-auto max-w-3xl p-6">
           <div className="rounded-card border border-clay/10 bg-rice/85 p-5">
-            <p className="font-head text-sm font-bold text-clay-deep">กำลังโหลด…</p>
+            <p className="font-head text-sm font-bold text-clay-deep">
+              กำลังโหลด...
+            </p>
           </div>
         </main>
       }

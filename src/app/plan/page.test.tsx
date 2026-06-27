@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import PlanPage from "./page";
 
 const navigation = vi.hoisted(() => ({
@@ -15,12 +15,15 @@ vi.mock("next/navigation", () => ({
 }));
 
 describe("PlanPage", () => {
+  afterEach(cleanup);
+
   beforeEach(() => {
     navigation.push.mockClear();
     navigation.search = "";
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
+        ok: true,
         json: async () => ({ plans: [] }),
       }),
     );
@@ -42,5 +45,28 @@ describe("PlanPage", () => {
     expect(body.eventContext).toContain("งานรำลึกวีรชนค่ายบางระจัน");
     expect(body.eventContext).toContain("อุทยานค่ายบางระจัน & อนุสาวรีย์วีรชน");
     expect(body.eventContext).toContain("ต้นเดือนกุมภาพันธ์ทุกปี");
+  });
+
+  it("แสดง 3 การ์ดแผนจาก showcase ทันทีโดยไม่ต้องรอ AI", () => {
+    render(<PlanPage />);
+    const h3s = screen.getAllByRole("heading", { level: 3 });
+    expect(h3s).toHaveLength(3);
+    expect(h3s[0]).toHaveTextContent("ครอบครัวสายบุญ");
+    expect(h3s[1]).toHaveTextContent("สายประวัติศาสตร์ครึ่งวัน");
+    expect(h3s[2]).toHaveTextContent("สายกิน 2 วัน");
+  });
+
+  it("แสดงค่าใช้จ่ายที่มีสัญลักษณ์ ฿ และไม่มี — หรือ – ในหน้า", () => {
+    render(<PlanPage />);
+    const allText = document.body.textContent ?? "";
+    expect(allText).toContain("฿");
+    expect(allText).not.toMatch(/[—–]/);
+  });
+
+  it("มีลิงก์ ดูบนแผนที่ 3 ลิงก์ ทุกอันชี้ไป /map", () => {
+    render(<PlanPage />);
+    const links = screen.getAllByRole("link", { name: /ดูบนแผนที่/ });
+    expect(links).toHaveLength(3);
+    links.forEach((link) => expect(link).toHaveAttribute("href", "/map"));
   });
 });
