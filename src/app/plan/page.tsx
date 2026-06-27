@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProfileQuiz } from "@/components/planner/ProfileQuiz";
 import { PlanCard } from "@/components/planner/PlanCard";
@@ -15,7 +15,7 @@ function buildEventContext(event: SingEvent) {
   return `ผู้ใช้ต้องการเที่ยวรอบงาน "${event.name}" (${event.when_label}, อำเภอ${event.district}) โดยมีสถานที่ anchor คือ ${anchorPlaceNames} โปรดจัดทริปให้เริ่มจากงานนี้และต่อด้วยสถานที่ใกล้เคียงที่คุ้มค่าการมา`;
 }
 
-export default function PlanPage() {
+function PlanPageContent() {
   const [plans, setPlans] = useState<Plan[] | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -83,5 +83,21 @@ export default function PlanPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function PlanPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto max-w-3xl p-6">
+          <div className="rounded-card border border-clay/10 bg-rice/85 p-5">
+            <p className="font-head text-sm font-bold text-clay-deep">กำลังโหลด…</p>
+          </div>
+        </main>
+      }
+    >
+      <PlanPageContent />
+    </Suspense>
   );
 }
