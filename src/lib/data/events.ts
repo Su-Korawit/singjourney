@@ -1,5 +1,49 @@
 import type { SingEvent } from "@/lib/types";
 
+export type Market = {
+  id: string;
+  name: string;
+  district: string;
+  description: string;
+  hours: string;
+  image_url: string | null;
+};
+
+export const MARKETS: Market[] = [
+  {
+    id: "market-banrachan",
+    name: "ตลาดไทยย้อนยุคบ้านระจัน",
+    district: "บ้านระจัน",
+    description: "ตลาดวัฒนธรรมย้อนยุค ของกิน ของฝาก บรรยากาศชุมชนแท้",
+    hours: "เสาร์-อาทิตย์ 06:00-12:00 น.",
+    image_url: null,
+  },
+  {
+    id: "market-maela",
+    name: "ตลาดปลาแม่ลา",
+    district: "ค่ายบางระจัน",
+    description: "ปลาแม่ลาสดจากแม่น้ำ อาหารพื้นบ้านสิงห์บุรีแท้",
+    hours: "ทุกวัน 05:00-10:00 น.",
+    image_url: null,
+  },
+  {
+    id: "market-singburi-city",
+    name: "ตลาดสดเทศบาลเมืองสิงห์บุรี",
+    district: "เมืองสิงห์บุรี",
+    description: "ตลาดสดใจกลางเมือง ผักสด ผลไม้ อาหารท้องถิ่นหลากหลาย",
+    hours: "ทุกวัน 04:00-09:00 น.",
+    image_url: null,
+  },
+  {
+    id: "market-walking-street",
+    name: "ถนนคนเดินสิงห์บุรี",
+    district: "เมืองสิงห์บุรี",
+    description: "ถนนคนเดินย่านใจกลางเมือง อาหารท้องถิ่น ศิลปะ ของฝาก",
+    hours: "ศุกร์-อาทิตย์ 17:00-21:00 น.",
+    image_url: null,
+  },
+];
+
 export const EVENTS: SingEvent[] = [
   { id: "e1", name: "งานรำลึกวีรชนค่ายบางระจัน", district: "ค่ายบางระจัน",
     month: 2, when_label: "ต้นเดือนกุมภาพันธ์ทุกปี", category: "historical",

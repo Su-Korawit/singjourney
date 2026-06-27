@@ -259,6 +259,18 @@ const MARKET_STATUSES: MarketStatus[] = [
     status: "open",
     description: "เปิดทุกวัน ปลาสดจากแม่น้ำ",
   },
+  {
+    id: "market-singburi-city",
+    name: "ตลาดสดเทศบาลเมืองสิงห์บุรี",
+    status: "open",
+    description: "เปิดทุกวัน 04:00-09:00 น.",
+  },
+  {
+    id: "market-walking-street",
+    name: "ถนนคนเดินสิงห์บุรี",
+    status: "open",
+    description: "เปิดศุกร์-อาทิตย์ 17:00-21:00 น.",
+  },
 ];
 
 const FESTIVAL_STATUSES: FestivalStatus[] = [
