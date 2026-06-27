@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, it, expect } from "vitest";
 import { HoursBadge } from "./HoursBadge";
 import type { Place } from "@/lib/types";
 
@@ -21,6 +21,10 @@ const base: Place = {
 };
 
 describe("HoursBadge", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   it("แสดง 'เปิดอยู่' เมื่อเปิด", () => {
     render(
       <HoursBadge place={base} now={new Date("2026-06-29T10:00:00+07:00")} />,
@@ -32,5 +36,16 @@ describe("HoursBadge", () => {
       <HoursBadge place={base} now={new Date("2026-06-29T20:00:00+07:00")} />,
     );
     expect(screen.getByText(/ปิดแล้ว/)).toBeInTheDocument();
+  });
+  it("override ชุมชนปิด → แสดง 'ปิดแล้ว' + 'อัปเดตโดยชุมชน'", () => {
+    render(
+      <HoursBadge
+        place={base}
+        now={new Date("2026-06-29T10:00:00+07:00")}
+        override={{ status: "closed", expires_at: "2026-07-01T00:00:00Z" }}
+      />,
+    );
+    expect(screen.getByText("ปิดแล้ว")).toBeInTheDocument();
+    expect(screen.getByText("อัปเดตโดยชุมชน")).toBeInTheDocument();
   });
 });

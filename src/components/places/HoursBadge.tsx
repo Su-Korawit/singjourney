@@ -1,5 +1,5 @@
-import type { Place } from "@/lib/types";
-import { isOpenNow } from "@/lib/places/hours";
+import type { Place, OverrideStatus } from "@/lib/types";
+import { effectiveStatus } from "@/lib/places/status";
 
 const LABEL = {
   open: "เปิดอยู่",
@@ -15,16 +15,23 @@ const COLOR = {
 export function HoursBadge({
   place,
   now = new Date(),
+  override = null,
 }: {
   place: Place;
   now?: Date;
+  override?: { status: OverrideStatus; expires_at: string } | null;
 }) {
-  const status = isOpenNow(place.opening_hours, now, place.business_status);
+  const { status, source } = effectiveStatus(place, override, now);
   return (
-    <span
-      className={`rounded-full border px-2.5 py-1 font-head text-xs font-bold ${COLOR[status]}`}
-    >
-      {LABEL[status]}
+    <span className="inline-flex items-center gap-1.5">
+      <span
+        className={`rounded-full border px-2.5 py-1 font-head text-xs font-bold ${COLOR[status]}`}
+      >
+        {LABEL[status]}
+      </span>
+      {source === "community" && (
+        <span className="text-[10px] font-medium text-clay-deep/60">อัปเดตโดยชุมชน</span>
+      )}
     </span>
   );
 }
