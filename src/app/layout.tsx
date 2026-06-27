@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Chonburi, Mitr, Sarabun } from "next/font/google";
 import Script from "next/script";
+import { Footer } from "@/components/shell/Footer";
+import { Header } from "@/components/shell/Header";
 import "./globals.css";
 
 const chonburi = Chonburi({
@@ -36,13 +38,9 @@ export default function RootLayout({
       <body
         className={`${chonburi.variable} ${mitr.variable} ${sarabun.variable} font-body`}
       >
-        <nav className="flex gap-4 border-b p-4 text-sm">
-          <a href="/">หน้าแรก</a>
-          <a href="/plan">วางแผน</a>
-          <a href="/map">Roadmap</a>
-          <a href="/watts-up">Watt&apos;s Up!</a>
-        </nav>
+        <Header />
         {children}
+        <Footer />
         <Script
           type="module"
           src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
