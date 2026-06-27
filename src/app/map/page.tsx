@@ -7,6 +7,8 @@ import { orderStopsByProximity } from "@/lib/route/geo";
 import { createBrowserClient } from "@/lib/supabase/client";
 import type { Item3D, PlanStop } from "@/lib/types";
 
+type CheckinModalState = "awarded" | "duplicate" | "empty" | null;
+
 const DEMO: PlanStop[] = [
   {
     place_id: "1",
@@ -38,6 +40,7 @@ export default function MapPage() {
   const [stops, setStops] = useState<PlanStop[]>(DEMO);
   const [modalItem, setModalItem] = useState<Item3D | null>(null);
   const [modalMsg, setModalMsg] = useState<string | null>(null);
+  const [modalState, setModalState] = useState<CheckinModalState>(null);
   const [couponUsed, setCouponUsed] = useState(false);
   const [checkingIn, setCheckingIn] = useState<string | null>(null);
   const [rewardPlaceIds, setRewardPlaceIds] = useState<string[]>([]);
@@ -74,6 +77,8 @@ export default function MapPage() {
     setCheckingIn(placeId);
     setModalItem(null);
     setModalMsg(null);
+    setModalState(null);
+    setCouponUsed(false);
     try {
       const res = await fetch("/api/checkin", {
         method: "POST",
@@ -82,13 +87,16 @@ export default function MapPage() {
       });
       const body = await res.json();
       if (body.awarded && body.item) {
+        setModalMsg("รับไอเทมสำเร็จ!");
         setModalItem(body.item);
-        setCouponUsed(false);
+        setModalState("awarded");
       } else if (body.item) {
         setModalMsg("คุณมีไอเทมนี้แล้ว");
         setModalItem(body.item);
+        setModalState("duplicate");
       } else {
         setModalMsg("ไม่มีไอเทมที่จุดนี้");
+        setModalState("empty");
       }
     } finally {
       setCheckingIn(null);
@@ -142,34 +150,57 @@ export default function MapPage() {
       </section>
 
       {(modalItem || modalMsg) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="rounded-lg bg-white p-6 shadow-xl">
-            {modalMsg && <p className="mb-3 text-center">{modalMsg}</p>}
-            {modalItem && (
-              <>
-                <ItemViewer modelUrl={modalItem.model_url} name={modalItem.name} />
-                {modalItem.type === "discount" && (
-                  <button
-                    type="button"
-                    disabled={couponUsed}
-                    onClick={() => setCouponUsed(true)}
-                    className="mt-3 w-full rounded bg-amber-600 px-3 py-1 text-white disabled:opacity-50"
-                  >
-                    {couponUsed ? "ใช้แล้ว" : "ใช้คูปอง"}
-                  </button>
-                )}
-              </>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                setModalItem(null);
-                setModalMsg(null);
-              }}
-              className="mt-4 w-full rounded border px-3 py-1"
-            >
-              ปิด
-            </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-clay-deep/55 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md overflow-hidden rounded-[1.75rem] border border-gold/30 bg-rice shadow-[0_28px_90px_rgba(92,42,30,0.36)]">
+            <div className="relative px-6 pb-6 pt-7">
+              <div className="pointer-events-none absolute inset-x-8 top-0 h-24 rounded-full bg-gold/20 blur-3xl" />
+              {modalMsg && (
+                <div className="relative mb-4 text-center">
+                  <p className="font-head text-xs font-bold uppercase tracking-[0.28em] text-gold">
+                    Check-in Reveal
+                  </p>
+                  <h2 className="mt-1 font-head text-2xl font-bold text-clay-deep">
+                    {modalMsg}
+                  </h2>
+                  {modalState === "awarded" && (
+                    <p className="mt-2 text-sm leading-6 text-clay-deep/70">
+                      หมุนชมของสะสม 3D ที่ปลดล็อกจากจุดเช็คอินนี้
+                    </p>
+                  )}
+                </div>
+              )}
+              {modalItem && (
+                <>
+                  <ItemViewer
+                    modelUrl={modalItem.model_url}
+                    name={modalItem.name}
+                    reveal={modalState === "awarded" ? "gold" : undefined}
+                  />
+                  {modalItem.type === "discount" && (
+                    <button
+                      type="button"
+                      disabled={couponUsed}
+                      onClick={() => setCouponUsed(true)}
+                      className="mt-4 w-full rounded-full bg-gold px-4 py-3 font-head font-bold text-clay-deep shadow-[0_14px_32px_rgba(200,150,47,0.28)] transition hover:-translate-y-0.5 hover:bg-gold/90 disabled:translate-y-0 disabled:cursor-not-allowed disabled:bg-clay-deep/20 disabled:text-clay-deep/55 disabled:shadow-none"
+                    >
+                      {couponUsed ? "ใช้แล้ว" : "ใช้คูปอง"}
+                    </button>
+                  )}
+                </>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setModalItem(null);
+                  setModalMsg(null);
+                  setModalState(null);
+                  setCouponUsed(false);
+                }}
+                className="mt-4 w-full rounded-full border border-clay/20 px-4 py-3 font-head font-bold text-clay-deep transition hover:border-clay hover:bg-paper"
+              >
+                ปิด
+              </button>
+            </div>
           </div>
         </div>
       )}
