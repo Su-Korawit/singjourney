@@ -11,6 +11,7 @@ type MapViewProps = {
   stops: PlanStop[];
   onCheckIn?: (placeId: string) => void;
   checkingInPlaceId?: string | null;
+  rewardPlaceIds?: string[];
 };
 
 function createMarkerElement(index: number, hasCheckIn: boolean) {
@@ -68,7 +69,9 @@ export function MapView({
   stops,
   onCheckIn,
   checkingInPlaceId = null,
+  rewardPlaceIds,
 }: MapViewProps) {
+  const rewardPlaceIdSet = new Set(rewardPlaceIds ?? []);
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
@@ -109,7 +112,7 @@ export function MapView({
       stops.forEach((s, i) => {
         const marker = new maplibregl.Marker({
           anchor: "bottom",
-          element: createMarkerElement(i, Boolean(onCheckIn)),
+          element: createMarkerElement(i, rewardPlaceIdSet.has(s.place_id)),
         })
           .setLngLat([s.lng, s.lat])
           .setPopup(
@@ -171,7 +174,7 @@ export function MapView({
 
     if (map.isStyleLoaded()) draw();
     else map.once("load", draw);
-  }, [checkingInPlaceId, onCheckIn, stops]);
+  }, [checkingInPlaceId, onCheckIn, rewardPlaceIds, stops]);
 
   return (
     <div

@@ -4,6 +4,7 @@ import { MapView } from "@/components/map/MapView";
 import { StopList } from "@/components/planner/StopList";
 import { ItemViewer } from "@/components/items/ItemViewer";
 import { orderStopsByProximity } from "@/lib/route/geo";
+import { createBrowserClient } from "@/lib/supabase/client";
 import type { Item3D, PlanStop } from "@/lib/types";
 
 const DEMO: PlanStop[] = [
@@ -39,6 +40,24 @@ export default function MapPage() {
   const [modalMsg, setModalMsg] = useState<string | null>(null);
   const [couponUsed, setCouponUsed] = useState(false);
   const [checkingIn, setCheckingIn] = useState<string | null>(null);
+  const [rewardPlaceIds, setRewardPlaceIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    createBrowserClient()
+      .from("items_3d")
+      .select("place_id")
+      .then(({ data }) => {
+        if (!data) return;
+        const ids = [
+          ...new Set(
+            data
+              .map((row) => row.place_id)
+              .filter((id): id is string => id != null),
+          ),
+        ];
+        setRewardPlaceIds(ids);
+      });
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem("sj_stops");
@@ -83,6 +102,7 @@ export default function MapPage() {
           stops={stops}
           onCheckIn={checkIn}
           checkingInPlaceId={checkingIn}
+          rewardPlaceIds={rewardPlaceIds}
         />
       </div>
 
