@@ -84,3 +84,16 @@ export type UserItem = {
   item_id: string;
   used: boolean;
 };
+
+export type SingEvent = {
+  id: string;
+  name: string;
+  district: string;
+  month: number;        // 1-12 เดือนที่จัดงานโดยประมาณ
+  when_label: string;   // ข้อความช่วงเวลาที่อ่านง่าย
+  category: PlaceCategory;
+  tagline: string;      // เหตุผลที่ต้องมา (1 ประโยคคม)
+  description: string;  // อธิบายงาน + ชวนอยู่ต่อ
+  anchor_place_ids: string[]; // ผูกกับ PLACES เพื่อ "วางแผนรอบงานนี้"
+  image_url: string | null;
+};
