@@ -1,1 +1,1 @@
-{ "crons": [{ "path": "/api/sync/hours", "schedule": "0 1,13 * * *" }] }
+{ "crons": [{ "path": "/api/sync/hours", "schedule": "0 1 * * *" }] }
