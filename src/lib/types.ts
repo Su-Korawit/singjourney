@@ -104,3 +104,34 @@ export type TempleContent = {
   famous_monk: string;  // พระเกจิ/พระสำคัญ
   merit_info: string;   // ทำบุญ/ขอพรเรื่องอะไร
 };
+
+export type LiveStatus = "open" | "closed" | "closing_soon";
+export type OverrideStatus = "open" | "closed";
+
+/** ผู้ใช้ที่เข้าระบบด้วย LINE Login */
+export type AppUser = {
+  id: string;
+  line_user_id: string;
+  display_name: string;
+  avatar_url: string | null;
+};
+
+/** สถานะเปิด-ปิดที่คนในท้องถิ่นแจ้งผ่าน LINE OA (override ข้อมูลอัตโนมัติ) */
+export type PlaceStatusOverride = {
+  id: string;
+  place_id: string;
+  status: OverrideStatus;
+  note: string | null;
+  reported_by: string; // line_user_id ของผู้แจ้ง
+  created_at: string;
+  expires_at: string;  // ISO; หลังเวลานี้ override หมดอายุ
+};
+
+/** ผู้ดูแลสถานที่ที่ verify แล้ว มีสิทธิ์แจ้งสถานะ */
+export type PlaceReporter = {
+  id: string;
+  place_id: string;
+  line_user_id: string;
+  label: string; // เช่น "เจ้าของร้าน", "ผู้ดูแลตลาด"
+  verified: boolean;
+};
