@@ -7,9 +7,9 @@ const LABEL = {
   closing_soon: "ใกล้ปิด",
 } as const;
 const COLOR = {
-  open: "bg-green-100 text-green-800",
-  closed: "bg-red-100 text-red-700",
-  closing_soon: "bg-amber-100 text-amber-800",
+  open: "border-open/20 bg-open/10 text-open",
+  closed: "border-closed/20 bg-closed/10 text-closed",
+  closing_soon: "border-closing/25 bg-closing/10 text-closing",
 } as const;
 
 export function HoursBadge({
@@ -22,7 +22,7 @@ export function HoursBadge({
   const status = isOpenNow(place.opening_hours, now, place.business_status);
   return (
     <span
-      className={`rounded px-2 py-0.5 text-xs font-medium ${COLOR[status]}`}
+      className={`rounded-full border px-2.5 py-1 font-head text-xs font-bold ${COLOR[status]}`}
     >
       {LABEL[status]}
     </span>

@@ -13,7 +13,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import type { PlanStop } from "@/lib/types";
 
-function Row({ stop }: { stop: PlanStop }) {
+function Row({ stop, order }: { stop: PlanStop; order: number }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: stop.place_id });
   return (
@@ -22,11 +22,18 @@ function Row({ stop }: { stop: PlanStop }) {
       {...attributes}
       {...listeners}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className="cursor-grab rounded border bg-white p-3 shadow-sm"
+      className="group cursor-grab rounded-card border border-clay/10 bg-rice px-4 py-3 shadow-[0_12px_30px_rgba(92,42,30,0.10)] transition hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-[0_16px_38px_rgba(92,42,30,0.14)]"
     >
-      <span className="mr-2 text-gray-400">⠿</span>
-      <span className="font-medium">{stop.name}</span>
-      <span className="ml-2 text-sm text-gray-500">{stop.suggested_time}</span>
+      <div className="flex items-center gap-3">
+        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-clay font-head text-sm font-bold text-rice shadow-[0_8px_18px_rgba(156,59,46,0.22)]">
+          {order}
+        </span>
+        <span className="text-gold/70 transition group-hover:text-gold">⠿</span>
+        <span className="flex-1 font-medium text-clay-deep">{stop.name}</span>
+        <span className="rounded-full bg-gold/10 px-3 py-1 font-head text-sm font-bold text-gold">
+          {stop.suggested_time}
+        </span>
+      </div>
     </li>
   );
 }
@@ -51,9 +58,9 @@ export function StopList({
         items={stops.map((s) => s.place_id)}
         strategy={verticalListSortingStrategy}
       >
-        <ul className="flex flex-col gap-2">
-          {stops.map((s) => (
-            <Row key={s.place_id} stop={s} />
+        <ul className="flex flex-col gap-3">
+          {stops.map((s, index) => (
+            <Row key={s.place_id} stop={s} order={index + 1} />
           ))}
         </ul>
       </SortableContext>
