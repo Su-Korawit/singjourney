@@ -56,7 +56,7 @@ describe("PlanPage", () => {
     expect(h3s[2]).toHaveTextContent("สายกิน 2 วัน");
   });
 
-  it("แสดงค่าใช้จ่ายที่มีสัญลักษณ์ ฿ และไม่มี — หรือ – ในหน้า", () => {
+  it("แสดงค่าใช้จ่ายที่มีสัญลักษณ์ ฿ และไม่มี em dash หรือ en dash ในหน้า", () => {
     render(<PlanPage />);
     const allText = document.body.textContent ?? "";
     expect(allText).toContain("฿");

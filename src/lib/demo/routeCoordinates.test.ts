@@ -39,7 +39,7 @@ const FILE_ROUTE = {
 };
 
 describe("buildRouteCoordinates", () => {
-  it("returns file coordinates when routeFeature provided — more points than stops.length", () => {
+  it("returns file coordinates when routeFeature provided: more points than stops.length", () => {
     const coords = buildRouteCoordinates(STOPS, FILE_ROUTE);
     expect(coords.length).toBeGreaterThan(STOPS.length);
     expect(coords).toEqual(FILE_ROUTE.geometry.coordinates);
