@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { DistrictMap } from "@/components/home/DistrictMap";
 import { PlaceImage } from "@/components/media/PlaceImage";
+import { getMarketStatuses, getFestivalStatuses } from "@/lib/demo/showcase";
 
 const featureCards = [
   {
@@ -32,8 +33,26 @@ const featureCards = [
   },
 ];
 
+const STATUS_COLORS: Record<string, string> = {
+  open: "#4F7A3A",
+  closing: "#C98A2B",
+  closed: "#B23A2E",
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  open: "เปิด",
+  closing: "ใกล้ปิด",
+  closed: "ปิด",
+};
+
 export default function Home() {
   const router = useRouter();
+
+  const markets = getMarketStatuses();
+  const festivals = getFestivalStatuses();
+  const openNow = [...markets, ...festivals].filter(
+    (item) => item.status === "open" || item.status === "closing",
+  );
 
   function openDistrict(district: string) {
     router.push(`/map?district=${encodeURIComponent(district)}`);
@@ -45,6 +64,9 @@ export default function Home() {
         <div className="space-y-6">
           <p className="font-head text-sm font-semibold uppercase tracking-[0.3em] text-gold">
             แผ่นดินวีรชนบางระจัน
+          </p>
+          <p className="font-head text-sm text-clay-deep/60">
+            ถิ่นวีรชนคนกล้า คู่หล้าพระนอน นามกระฉ่อนปลาแม่ลา เทศกาลกินปลาประจำปี
           </p>
           <div className="space-y-4">
             <h1 className="font-display text-5xl leading-tight text-clay-deep sm:text-6xl lg:text-7xl">
@@ -82,6 +104,48 @@ export default function Home() {
           />
         </div>
       </section>
+
+      {openNow.length > 0 && (
+        <section
+          aria-label="เปิดอยู่ตอนนี้"
+          className="mx-auto mt-10 max-w-6xl"
+        >
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-head text-lg font-semibold text-clay-deep">
+              เปิดอยู่ตอนนี้
+            </h2>
+            <a
+              href="/events"
+              className="font-head text-sm text-gold hover:underline"
+            >
+              ดูทั้งหมด
+            </a>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {openNow.map((item) => (
+              <a
+                key={item.id}
+                href="/events"
+                className="flex items-center gap-2 rounded-full border border-clay/15 bg-rice/80 px-4 py-2 shadow-sm transition hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-md"
+              >
+                <span
+                  className="inline-block h-2 w-2 rounded-full"
+                  style={{ backgroundColor: STATUS_COLORS[item.status] }}
+                />
+                <span className="font-head text-sm text-clay-deep">
+                  {item.name}
+                </span>
+                <span
+                  className="rounded-full px-2 py-0.5 font-head text-xs font-semibold text-white"
+                  style={{ backgroundColor: STATUS_COLORS[item.status] }}
+                >
+                  {STATUS_LABELS[item.status]}
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section
         aria-label="ฟีเจอร์หลัก"

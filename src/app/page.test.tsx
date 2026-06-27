@@ -1,11 +1,13 @@
 /** @vitest-environment jsdom */
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen, cleanup } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import Home from "./page";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
+
+afterEach(cleanup);
 
 describe("Home", () => {
   it("presents the Bang Rachan hero with a real image and events feature card", () => {
@@ -39,5 +41,11 @@ describe("Home", () => {
       "md:grid-cols-2",
       "lg:grid-cols-4",
     );
+  });
+
+  it("แสดงคำขวัญจังหวัดและแถบสถานที่ที่เปิดอยู่ตอนนี้", () => {
+    render(<Home />);
+    expect(screen.getByText(/ถิ่นวีรชนคนกล้า/)).toBeInTheDocument();
+    expect(screen.getByText(/เปิดอยู่ตอนนี้/)).toBeInTheDocument();
   });
 });

@@ -1,19 +1,35 @@
-## Task 9 Report - Watt's Up full temple cards + MyCollection
+# Task 9 Report — HoursBadge community override badge
 
-Status: implemented.
+## Status
+**Complete**
 
-Changes:
-- Replaced watts-up placeholder temple cards with the five `TEMPLES` entries joined to `placeById` and rendered through `PlaceImage`.
-- Updated the watts-up hero subcopy to remove Phase 4 placeholder language.
-- Added `MyCollection` to read unlocked items and coupons from `localStorage` key `sj_items`.
-- Saved newly awarded check-in items to `sj_items` in `/map`, de-duped by item id.
-- Added regression tests for watts-up real temple content and awarded check-in collection persistence.
+## Changes
+- **`src/components/places/HoursBadge.tsx`** — Added optional `override` prop; uses `effectiveStatus()` to resolve status; shows "อัปเดตโดยชุมชน" label when `source === "community"`. Auto path labels unchanged ("เปิดอยู่" / "ปิดแล้ว" / "ใกล้ปิด").
+- **`src/components/places/HoursBadge.test.tsx`** — Added community override test case; added `afterEach(cleanup)` so DOM isolation works across the three tests in the suite.
 
-Verification:
-- RED check: `npm test -- src/app/watts-up/page.test.tsx src/app/map/page.test.tsx` failed before implementation for missing real watts-up content and missing `sj_items` persistence.
-- Targeted pass: `npm test -- src/app/watts-up/page.test.tsx src/app/map/page.test.tsx` passed: 2 files, 4 tests.
-- Full suite: `npm test` passed: 21 files, 47 tests.
-- Cursor diagnostics reported no linter errors for edited files.
+## TDD
+1. **RED** — `npx vitest run src/components/places/HoursBadge.test.tsx` failed (missing "อัปเดตโดยชุมชน", override prop not supported).
+2. **GREEN** — Implemented `HoursBadge` with `effectiveStatus` + community badge; 3 HoursBadge tests pass.
+3. **Full suite** — `npm test` — 30 files, 73 tests, all passed.
 
-Concerns:
-- I did not run a live browser visual check; the content, images, collection heading, and localStorage persistence are covered by automated tests.
+## Commit
+```
+feat(line): show community override + 'อัปเดตโดยชุมชน' badge in HoursBadge
+```
+
+## SHA
+`5c25bea`
+
+## Tests
+```
+npx vitest run src/components/places/HoursBadge.test.tsx — 3 passed
+npm test — 30 files, 73 tests, all passed (green)
+```
+
+## Notes
+- Consumes `effectiveStatus` from Task 1; `OverrideStatus` type from `@/lib/types`.
+- Step 5 (server wiring to fetch `place_status_overrides` and pass prop) is manual — not in scope for this task's file changes.
+- Existing auto-path tests unchanged; labels and regex matchers preserved.
+
+## Concerns
+- None blocking.

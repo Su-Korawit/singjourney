@@ -1,18 +1,38 @@
-## Task 8 Report - `/map` uses real PLACES + photos
+# Task 8 Report — LINE push notifications on status change
 
-Status: implemented.
+## Status
+**Complete**
 
-Changes:
-- Replaced the hardcoded three-stop map demo with `PLACES.slice(0, 5)` mapped into `PlanStop`.
-- Kept the existing `localStorage` key `sj_stops` as the override source for selected plans.
-- Added `PlaceImage` thumbnails to the check-in stop list using `placeById(s.place_id)?.image_url`.
-- Added real-place images to MapView popups when the stop matches a known place.
-- Added a regression test for real-place defaults and saved `sj_stops` behavior.
+## Changes
+- **`src/lib/line/push.ts`** — `buildStatusMessage`, `pushLineMessage` (POST to LINE push API), `pushStatusToInterestedUsers` (queries checkins → users, pushes to all interested LINE users).
+- **`src/lib/line/push.test.ts`** — TDD tests: closed message content, push HTTP call with Bearer token, notify all users who checked in.
+- **`src/lib/line/webhook.ts`** — After successful override insert, best-effort push via `pushStatusToInterestedUsers` when `LINE_MESSAGING_ACCESS_TOKEN` is set; push failures do not fail the webhook.
+- **`src/lib/line/webhook.test.ts`** — `beforeEach` clears `LINE_MESSAGING_ACCESS_TOKEN` so push branch is skipped in unit tests.
 
-Verification:
-- `npm test -- src/app/map/page.test.tsx` passed: 1 file, 2 tests.
-- `npm test` passed: 20 files, 45 tests.
-- Cursor diagnostics reported no linter errors for edited files.
+## TDD
+1. **RED** — `npx vitest run src/lib/line/push.test.ts` failed (`Cannot find package '@/lib/line/push'`).
+2. **GREEN** — Implemented `push.ts`; 3 push tests pass.
+3. **Integration** — Updated `handleStatusReport` to call push after save; webhook tests still pass (3 tests, token unset).
+4. **Full suite** — `npm test` — 30 files, 72 tests, all passed.
 
-Concerns:
-- The first five `PLACES` entries reference `/images/places/p2.jpg`, `/images/places/p3.jpg`, and `/images/places/p5.jpg`; if those files are not present in `public/images/places`, the UI will rely on the existing `PlaceImage` fallback after image load failure.
+## Commit
+```
+feat(line): push LINE notification to interested users on status change
+```
+
+## SHA
+`0732b04`
+
+## Tests
+```
+npx vitest run src/lib/line/push.test.ts — 3 passed
+npx vitest run src/lib/line/webhook.test.ts — 3 passed
+npm test — 30 files, 72 tests, all passed (green)
+```
+
+## Notes
+- Consumes `handleStatusReport` flow from Task 7; requires `LINE_MESSAGING_ACCESS_TOKEN` at runtime for actual pushes.
+- Push is best-effort: errors are swallowed so override save always succeeds.
+
+## Concerns
+- None blocking.
