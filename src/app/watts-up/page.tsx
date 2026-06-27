@@ -1,30 +1,7 @@
-type TempleCard = {
-  name: string;
-  district: string;
-  merit: string;
-  imageUrl: string | null;
-};
-
-const templeCards: TempleCard[] = [
-  {
-    name: "วัดพระนอนจักรสีห์",
-    district: "อำเภอเมืองสิงห์บุรี",
-    merit: "ไหว้พระนอนองค์ใหญ่ ขอพรเรื่องความสงบใจ",
-    imageUrl: null,
-  },
-  {
-    name: "วัดพิกุลทอง",
-    district: "อำเภอท่าช้าง",
-    merit: "ทำบุญพระใหญ่ และเดินชมลานธรรมสีทอง",
-    imageUrl: null,
-  },
-  {
-    name: "วัดม่วงชุม",
-    district: "อำเภออินทร์บุรี",
-    merit: "แวะเติมแต้มบุญในเส้นทางริมเจ้าพระยา",
-    imageUrl: null,
-  },
-];
+import { PlaceImage } from "@/components/media/PlaceImage";
+import { placeById } from "@/lib/data/places";
+import { TEMPLES } from "@/lib/data/temples";
+import { MyCollection } from "./MyCollection";
 
 export default function WattsUpPage() {
   return (
@@ -39,8 +16,8 @@ export default function WattsUpPage() {
             <span className="block text-gold">ธีมทอง</span>
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-clay-deep/75">
-            โครงหน้า Phase 4 สำหรับรวมวัด จุดทำบุญ และเรื่องเล่ามงคลของสิงห์บุรี
-            วางบรรยากาศทอง-ครีมให้พร้อมต่อยอดเป็นคอนเทนต์เต็ม
+            รวมวัดมงคล เรื่องเล่าพระเกจิ
+            และของสะสมจากการเช็คอินจริงทั่วสิงห์บุรี
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <a
@@ -88,44 +65,47 @@ export default function WattsUpPage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-8 grid max-w-6xl gap-4 md:grid-cols-3">
-        {templeCards.map((temple) => (
-          <article
-            key={temple.name}
-            className="group overflow-hidden rounded-card border border-gold/20 bg-rice shadow-[0_18px_48px_rgba(92,42,30,0.10)] transition hover:-translate-y-1 hover:border-gold/55 hover:shadow-[0_24px_64px_rgba(92,42,30,0.16)]"
-          >
-            <div
-              className="relative grid aspect-[4/3] place-items-center overflow-hidden bg-[radial-gradient(circle_at_30%_20%,rgba(200,150,47,0.42),transparent_30%),linear-gradient(135deg,rgba(251,247,239,0.95),rgba(200,150,47,0.2))] bg-cover bg-center"
-              style={
-                temple.imageUrl
-                  ? { backgroundImage: `url(${temple.imageUrl})` }
-                  : undefined
-              }
+      <section className="mx-auto mt-8 grid max-w-6xl gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {TEMPLES.map((temple) => {
+          const place = placeById(temple.place_id);
+          if (!place) return null;
+
+          return (
+            <article
+              key={temple.place_id}
+              className="group overflow-hidden rounded-card border border-gold/20 bg-rice shadow-[0_18px_48px_rgba(92,42,30,0.10)] transition hover:-translate-y-1 hover:border-gold/55 hover:shadow-[0_24px_64px_rgba(92,42,30,0.16)]"
             >
-              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(92,42,30,0.04)_25%,transparent_25%,transparent_50%,rgba(92,42,30,0.04)_50%,rgba(92,42,30,0.04)_75%,transparent_75%,transparent)] bg-[length:24px_24px]" />
-              <div className="relative rounded-full border border-gold/30 bg-rice/80 px-4 py-2 text-center backdrop-blur">
-                <p className="font-head text-xs font-bold uppercase tracking-[0.24em] text-gold">
-                  Swap-Point
+              <PlaceImage src={place.image_url} name={place.name} ratio="4/3" />
+              <div className="p-5">
+                <p className="font-head text-sm font-bold text-gold">
+                  {place.district}
                 </p>
-                <p className="mt-1 max-w-44 font-head font-bold text-clay-deep">
-                  {temple.name}
-                </p>
+                <h2 className="mt-1 font-display text-3xl text-clay-deep">
+                  {place.name}
+                </h2>
+                <dl className="mt-3 space-y-2 text-sm leading-6 text-clay-deep/80">
+                  <div>
+                    <dt className="font-head font-bold text-clay">ประวัติ</dt>
+                    <dd>{temple.history}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-head font-bold text-clay">
+                      พระเกจิ/พระสำคัญ
+                    </dt>
+                    <dd>{temple.famous_monk}</dd>
+                  </div>
+                  <div>
+                    <dt className="font-head font-bold text-clay">ทำบุญ/ขอพร</dt>
+                    <dd>{temple.merit_info}</dd>
+                  </div>
+                </dl>
               </div>
-            </div>
-            <div className="p-5">
-              <p className="font-head text-sm font-bold text-gold">
-                {temple.district}
-              </p>
-              <h2 className="mt-2 font-display text-3xl text-clay-deep">
-                {temple.name}
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-clay-deep/75">
-                {temple.merit}
-              </p>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </section>
+
+      <MyCollection />
     </main>
   );
 }

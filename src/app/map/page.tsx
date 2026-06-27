@@ -72,6 +72,15 @@ export default function MapPage() {
       });
       const body = await res.json();
       if (body.awarded && body.item) {
+        try {
+          const raw = localStorage.getItem("sj_items");
+          const list: Item3D[] = raw ? JSON.parse(raw) : [];
+          if (!list.some((item) => item.id === body.item.id)) {
+            localStorage.setItem("sj_items", JSON.stringify([...list, body.item]));
+          }
+        } catch {
+          /* Collection persistence should not block the check-in reveal. */
+        }
         setModalMsg("รับไอเทมสำเร็จ!");
         setModalItem(body.item);
         setModalState("awarded");

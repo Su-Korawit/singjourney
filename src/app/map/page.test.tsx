@@ -1,9 +1,10 @@
 /** @vitest-environment jsdom */
 import { render, screen, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import MapPage from "./page";
 import { PLACES } from "@/lib/data/places";
-import type { PlanStop } from "@/lib/types";
+import type { Item3D, PlanStop } from "@/lib/types";
 
 vi.mock("@/components/map/MapView", () => ({
   MapView: ({ stops }: { stops: PlanStop[] }) => (
@@ -22,6 +23,10 @@ vi.mock("@/lib/supabase/client", () => ({
 describe("MapPage", () => {
   beforeEach(() => {
     localStorage.clear();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it("seeds the roadmap from the first five real places with thumbnails", () => {
@@ -56,5 +61,29 @@ describe("MapPage", () => {
       "src",
       "/images/places/p6.jpg",
     );
+  });
+
+  it("saves newly awarded check-in items to the local collection", async () => {
+    const item: Item3D = {
+      id: "item-p1",
+      name: "พระนอนจำลอง",
+      type: "souvenir",
+      model_url: "/models/p1.glb",
+      place_id: "p1",
+      is_consumable: false,
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ awarded: true, item }),
+      }),
+    );
+
+    render(<MapPage />);
+    await userEvent.click(screen.getAllByRole("button", { name: "เช็คอิน" })[0]);
+
+    await waitFor(() => {
+      expect(JSON.parse(localStorage.getItem("sj_items") ?? "[]")).toEqual([item]);
+    });
   });
 });
