@@ -97,3 +97,10 @@ export type SingEvent = {
   anchor_place_ids: string[]; // ผูกกับ PLACES เพื่อ "วางแผนรอบงานนี้"
   image_url: string | null;
 };
+
+export type TempleContent = {
+  place_id: string;     // อ้างถึง PLACES
+  history: string;      // ประวัติย่อ
+  famous_monk: string;  // พระเกจิ/พระสำคัญ
+  merit_info: string;   // ทำบุญ/ขอพรเรื่องอะไร
+};
