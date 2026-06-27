@@ -58,8 +58,8 @@ export default function WattsUpPage() {
               ))}
             </div>
             <p className="text-sm leading-6 text-clay-deep/70">
-              ภาพถ่ายจริงจะสลับเข้าจาก Swap-Point ในรอบต่อไป ระหว่างนี้ fallback
-              ยังรักษาสัดส่วนการ์ดให้คงที่
+              เช็กอินครบทุกวัดเพื่อปลดล็อกไอเทม 3D และรับคูปองร้านค้าชุมชน
+              รอบเส้นทางสายมูสิงห์บุรี
             </p>
           </div>
         </div>

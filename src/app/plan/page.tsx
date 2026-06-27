@@ -18,25 +18,35 @@ function buildEventContext(event: SingEvent) {
 function PlanPageContent() {
   const [plans, setPlans] = useState<Plan[] | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const params = useSearchParams();
   const anchorEvent = eventById(params.get("event") ?? "");
 
   async function onComplete(profile: UserProfile) {
     setLoading(true);
+    setError(null);
     const eventContext = anchorEvent
       ? buildEventContext(anchorEvent)
       : undefined;
-    const res = await fetch("/api/plan", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(
-        eventContext ? { ...profile, eventContext } : profile,
-      ),
-    });
-    const data = await res.json();
-    setPlans(data.plans);
-    setLoading(false);
+    try {
+      const res = await fetch("/api/plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          eventContext ? { ...profile, eventContext } : profile,
+        ),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.plans) {
+        throw new Error(data?.error ?? `AI วางแผนไม่สำเร็จ (${res.status})`);
+      }
+      setPlans(data.plans);
+    } catch {
+      setError("ขออภัย ระบบวางแผนขัดข้องชั่วคราว กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function select(plan: Plan) {
@@ -60,6 +70,11 @@ function PlanPageContent() {
           <p className="text-sm text-clay-deep/70">
             {anchorEvent.when_label} · {anchorEvent.district}
           </p>
+        </div>
+      )}
+      {!plans && error && (
+        <div className="mb-5 rounded-card border border-clay/30 bg-clay/5 px-4 py-3">
+          <p className="font-head text-sm font-bold text-clay-deep">{error}</p>
         </div>
       )}
       {!plans && <ProfileQuiz onComplete={onComplete} />}
