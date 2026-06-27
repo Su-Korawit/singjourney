@@ -77,34 +77,49 @@ export default function MapPage() {
   }
 
   return (
-    <main className="grid gap-6 p-6 md:grid-cols-[360px_1fr]">
-      <section>
-        <h2 className="mb-3 text-xl font-bold">Roadmap</h2>
+    <main className="mx-auto grid w-full max-w-6xl gap-5 px-4 py-5 sm:px-6 md:grid-cols-[360px_minmax(0,1fr)] md:gap-6 md:py-8">
+      <div className="sticky top-4 z-10 -mx-4 sm:mx-0 md:order-2 md:top-6">
+        <MapView
+          stops={stops}
+          onCheckIn={checkIn}
+          checkingInPlaceId={checkingIn}
+        />
+      </div>
+
+      <section className="rounded-card border border-clay/10 bg-rice/85 p-4 shadow-[0_18px_45px_rgba(92,42,30,0.10)] md:order-1 md:self-start">
+        <p className="mb-1 font-head text-xs font-bold uppercase tracking-[0.28em] text-gold">
+          Sing Journey Roadmap
+        </p>
+        <h2 className="mb-3 font-head text-2xl font-bold text-clay-deep">
+          จัดเส้นทางเที่ยวสิงห์บุรี
+        </h2>
         <button
           type="button"
           onClick={() => setStops(orderStopsByProximity(stops))}
-          className="mb-3 rounded bg-orange-600 px-3 py-1 text-white"
+          className="mb-4 w-full rounded-full bg-clay px-4 py-2 font-head font-bold text-rice shadow-[0_10px_24px_rgba(156,59,46,0.24)] transition hover:-translate-y-0.5 hover:bg-clay-deep"
         >
           จัดเส้นทางอัตโนมัติ
         </button>
         <StopList stops={stops} onReorder={setStops} />
         <ul className="mt-4 flex flex-col gap-2">
           {stops.map((s) => (
-            <li key={s.place_id} className="flex items-center justify-between gap-2">
-              <span className="text-sm">{s.name}</span>
+            <li
+              key={s.place_id}
+              className="flex items-center justify-between gap-3 rounded-card border border-clay/10 bg-paper/70 px-3 py-2"
+            >
+              <span className="text-sm font-medium text-clay-deep">{s.name}</span>
               <button
                 type="button"
                 disabled={checkingIn === s.place_id}
                 onClick={() => checkIn(s.place_id)}
-                className="rounded border px-2 py-1 text-xs hover:bg-gray-50 disabled:opacity-50"
+                className="rounded-full border border-clay/20 px-3 py-1 font-head text-xs font-bold text-clay transition hover:border-clay hover:bg-clay hover:text-rice disabled:opacity-50"
               >
-                Check-in
+                เช็คอิน
               </button>
             </li>
           ))}
         </ul>
       </section>
-      <MapView stops={stops} />
 
       {(modalItem || modalMsg) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">

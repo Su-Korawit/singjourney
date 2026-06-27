@@ -21,3 +21,70 @@ body {
   color: var(--color-clay-deep);
   font-family: var(--font-body);
 }
+
+.roadmap-warm .maplibregl-canvas {
+  filter: sepia(.18) saturate(1.15) hue-rotate(-8deg) brightness(1.02) contrast(.98);
+}
+
+.roadmap-marker {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 2px solid var(--color-rice);
+  border-radius: 999px 999px 999px 0;
+  background: var(--color-clay);
+  box-shadow: 0 12px 24px rgb(92 42 30 / 24%);
+  color: var(--color-rice);
+  font-family: var(--font-head);
+  font-size: 0.85rem;
+  font-weight: 700;
+  transform: rotate(-45deg);
+}
+
+.roadmap-marker span {
+  transform: rotate(45deg);
+}
+
+.roadmap-marker--checkin {
+  border-color: var(--color-gold);
+  box-shadow:
+    0 0 0 4px rgb(200 150 47 / 28%),
+    0 14px 28px rgb(92 42 30 / 28%);
+}
+
+.roadmap-popup {
+  min-width: 10rem;
+  color: var(--color-clay-deep);
+  font-family: var(--font-body);
+}
+
+.roadmap-popup__title {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.roadmap-popup__time {
+  margin: 0.25rem 0 0.75rem;
+  color: rgb(92 42 30 / 70%);
+  font-size: 0.8rem;
+}
+
+.roadmap-popup__button {
+  width: 100%;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-clay);
+  color: var(--color-rice);
+  cursor: pointer;
+  font-family: var(--font-head);
+  font-weight: 700;
+  padding: 0.45rem 0.75rem;
+}
+
+.roadmap-popup__button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
