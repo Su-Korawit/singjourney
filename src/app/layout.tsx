@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Chonburi, Mitr, Sarabun } from "next/font/google";
-import Script from "next/script";
 import { Footer } from "@/components/shell/Footer";
 import { Header } from "@/components/shell/Header";
 import "./globals.css";
@@ -41,11 +40,6 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
-        <Script
-          type="module"
-          src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );

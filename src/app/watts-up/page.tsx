@@ -1,3 +1,4 @@
+import { ItemViewer } from "@/components/items/ItemViewer";
 import { PlaceImage } from "@/components/media/PlaceImage";
 import { placeById } from "@/lib/data/places";
 import { TEMPLES } from "@/lib/data/temples";
@@ -103,6 +104,37 @@ export default function WattsUpPage() {
             </article>
           );
         })}
+      </section>
+
+      <section className="mx-auto mt-8 max-w-6xl rounded-[2rem] border border-gold/25 bg-rice p-6 shadow-[0_18px_48px_rgba(92,42,30,0.10)] sm:p-8">
+        <p className="font-head text-sm font-bold uppercase tracking-[0.32em] text-gold">
+          ตัวอย่างของสะสม 3D
+        </p>
+        <h2 className="mt-2 font-display text-4xl text-clay-deep">
+          ไอเทมที่ปลดล็อกได้
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-clay-deep/70">
+          เช็คอินครบทุกวัดเพื่อรับของสะสมดิจิทัล 3D หมุนดูได้ทุกมุม
+          และคูปองร้านค้าชุมชนรอบเส้นทางสายมูสิงห์บุรี
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-10">
+          <div className="flex flex-col items-center gap-2">
+            <ItemViewer
+              modelUrl="/models/souvenir.glb"
+              name="ของที่ระลึกสิงห์บุรี"
+              reveal="gold"
+            />
+            <span className="rounded-full bg-gold/15 px-3 py-1 font-head text-xs font-bold text-gold">
+              ของสะสม
+            </span>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <ItemViewer modelUrl="/models/coupon.glb" name="คูปองร้านค้าชุมชน" />
+            <span className="rounded-full bg-clay/10 px-3 py-1 font-head text-xs font-bold text-clay">
+              คูปอง
+            </span>
+          </div>
+        </div>
       </section>
 
       <MyCollection />

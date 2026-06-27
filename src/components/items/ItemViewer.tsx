@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 type ItemViewerProps = {
   modelUrl: string;
   name: string;
@@ -11,6 +13,16 @@ export function ItemViewer({
   name,
   reveal,
 }: ItemViewerProps) {
+  useEffect(() => {
+    const SRC =
+      "https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js";
+    if (document.querySelector(`script[src="${SRC}"]`)) return;
+    const s = document.createElement("script");
+    s.type = "module";
+    s.src = SRC;
+    document.body.appendChild(s);
+  }, []);
+
   const isGoldReveal = reveal === "gold";
 
   return (
