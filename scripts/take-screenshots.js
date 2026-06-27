@@ -72,7 +72,9 @@ async function takeScreenshots() {
           waitUntil: "networkidle",
           timeout: 30000,
         });
-        await p.waitForTimeout(3000);
+        // Map page needs extra time for MapLibre tiles to render
+        const waitMs = page.path === "/map" ? 8000 : 3000;
+        await p.waitForTimeout(waitMs);
         const file = path.join(SCREENSHOTS_DIR, `${page.name}.png`);
         await p.screenshot({ path: file, fullPage: false });
         console.log(`Saved: ${file}`);
