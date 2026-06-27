@@ -13,8 +13,7 @@ export interface ShowcasePlan {
   id: string;
   title: string;
   summary: string;
-  days: number;
-  stops: PlanStop[];
+  days: Array<{ stops: PlanStop[] }>;
   costRange: { low: number; high: number };
 }
 
@@ -150,11 +149,11 @@ function makePlan(
   id: string,
   title: string,
   summary: string,
-  days: number,
-  stops: PlanStop[],
+  days: Array<{ stops: PlanStop[] }>,
 ): ShowcasePlan {
-  const costRange = estimateCost(stops, 2, { days });
-  return { id, title, summary, days, stops, costRange };
+  const allStops = days.flatMap((d) => d.stops);
+  const costRange = estimateCost(allStops, 2, { days: days.length });
+  return { id, title, summary, days, costRange };
 }
 
 const SHOWCASE_PLANS: ShowcasePlan[] = [
@@ -162,22 +161,22 @@ const SHOWCASE_PLANS: ShowcasePlan[] = [
     "plan-family",
     "ครอบครัวสายบุญ",
     "1 วัน ไหว้พระ ชมประวัติศาสตร์ ทานปลาแม่ลา เหมาะสำหรับครอบครัว 2-4 คน",
-    1,
-    STOPS_FAMILY,
+    [{ stops: STOPS_FAMILY }],
   ),
   makePlan(
     "plan-history",
     "สายประวัติศาสตร์ครึ่งวัน",
     "ครึ่งวัน ค่ายบางระจัน วัดโพธิ์เก้าต้น พิพิธภัณฑ์อินทร์บุรี เส้นทางวีรชน",
-    1,
-    STOPS_HISTORY,
+    [{ stops: STOPS_HISTORY }],
   ),
   makePlan(
     "plan-foodie",
     "สายกิน 2 วัน",
     "2 วัน 1 คืน ปลาแม่ลา ตลาดย้อนยุค หมู่บ้านไทยพวน วัดอัมพวัน ครบรส",
-    2,
-    STOPS_FOODIE,
+    [
+      { stops: STOPS_FOODIE.slice(0, 4) },
+      { stops: STOPS_FOODIE.slice(4) },
+    ],
   ),
 ];
 
