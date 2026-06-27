@@ -4,21 +4,22 @@ import { MapView } from "@/components/map/MapView";
 import { PlaceImage } from "@/components/media/PlaceImage";
 import { StopList } from "@/components/planner/StopList";
 import { ItemViewer } from "@/components/items/ItemViewer";
-import { PLACES, placeById } from "@/lib/data/places";
+import { placeById } from "@/lib/data/places";
 import { orderStopsByProximity } from "@/lib/route/geo";
 import { createBrowserClient } from "@/lib/supabase/client";
 import type { Item3D, PlanStop } from "@/lib/types";
+import { getShowcaseRoadmap } from "@/lib/demo/showcase";
 
 type CheckinModalState = "awarded" | "duplicate" | "empty" | null;
 
-const DEFAULT_TIMES = ["09:00", "10:30", "12:00", "14:00", "15:30"];
-const DEMO: PlanStop[] = PLACES.slice(0, 5).map((place, index) => ({
-  place_id: place.id,
-  name: place.name,
-  reason: place.description,
-  suggested_time: DEFAULT_TIMES[index] ?? "16:00",
-  lat: place.lat,
-  lng: place.lng,
+const DEFAULT_TIMES = ["09:00", "10:30", "12:00", "14:00", "15:30", "16:30", "17:30"];
+const DEMO: PlanStop[] = getShowcaseRoadmap().map((stop, index) => ({
+  place_id: stop.id,
+  name: stop.name,
+  reason: stop.description ?? "",
+  suggested_time: DEFAULT_TIMES[index] ?? "18:00",
+  lat: stop.lat,
+  lng: stop.lng,
 }));
 
 export default function MapPage() {

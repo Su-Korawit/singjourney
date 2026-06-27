@@ -242,12 +242,6 @@ const ROADMAP_STOPS: PlanStop[] = [
 
 const MARKET_STATUSES: MarketStatus[] = [
   {
-    id: "market-wisetchaichan",
-    name: "ตลาดวิเศษชัยชาญ",
-    status: "open",
-    description: "เปิดทุกวัน 06:00-12:00 น.",
-  },
-  {
     id: "market-banrachan",
     name: "ตลาดไทยย้อนยุคบ้านระจัน",
     status: "closing",

@@ -3,7 +3,8 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import MapPage from "./page";
-import { PLACES } from "@/lib/data/places";
+import { placeById } from "@/lib/data/places";
+import { getShowcaseRoadmap } from "@/lib/demo/showcase";
 import type { Item3D, PlanStop } from "@/lib/types";
 
 vi.mock("@/components/map/MapView", () => ({
@@ -29,14 +30,15 @@ describe("MapPage", () => {
     vi.unstubAllGlobals();
   });
 
-  it("seeds the roadmap from the first five real places with thumbnails", () => {
+  it("seeds the roadmap from showcase roadmap stops with thumbnails", () => {
     render(<MapPage />);
 
-    for (const place of PLACES.slice(0, 5)) {
-      expect(screen.getAllByText(place.name).length).toBeGreaterThan(0);
-      expect(screen.getByRole("img", { name: place.name })).toHaveAttribute(
+    for (const stop of getShowcaseRoadmap()) {
+      expect(screen.getAllByText(stop.name).length).toBeGreaterThan(0);
+      const place = placeById(stop.id);
+      expect(screen.getByRole("img", { name: stop.name })).toHaveAttribute(
         "src",
-        place.image_url,
+        place?.image_url,
       );
     }
   });
