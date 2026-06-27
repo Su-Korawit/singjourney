@@ -1,6 +1,25 @@
 import type { Metadata } from "next";
+import { Chonburi, Mitr, Sarabun } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+
+const chonburi = Chonburi({
+  subsets: ["thai", "latin"],
+  weight: "400",
+  variable: "--font-display",
+});
+
+const mitr = Mitr({
+  subsets: ["thai", "latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-head",
+});
+
+const sarabun = Sarabun({
+  subsets: ["thai", "latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-body",
+});
 
 export const metadata: Metadata = {
   title: "Sing Journey",
@@ -14,7 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th">
-      <body>
+      <body
+        className={`${chonburi.variable} ${mitr.variable} ${sarabun.variable} font-body`}
+      >
         <nav className="flex gap-4 border-b p-4 text-sm">
           <a href="/">หน้าแรก</a>
           <a href="/plan">วางแผน</a>

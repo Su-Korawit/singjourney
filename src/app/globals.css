@@ -1,2 +1,23 @@
 @import "tailwindcss";
 @import "maplibre-gl/dist/maplibre-gl.css";
+
+@theme {
+  --color-clay: #9c3b2e; /* แบรนด์หลัก บางระจัน */
+  --color-clay-deep: #5c2a1e; /* หัวข้อ/footer */
+  --color-gold: #c8962f; /* Watt's Up!/มงคล */
+  --color-paper: #f4ece0; /* พื้นหลังหน้า */
+  --color-rice: #fbf7ef; /* card สลับ */
+  --color-open: #4f7a3a;
+  --color-closing: #c98a2b;
+  --color-closed: #b23a2e;
+  --font-display: var(--font-display);
+  --font-head: var(--font-head);
+  --font-body: var(--font-body);
+  --radius-card: 0.9rem;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-clay-deep);
+  font-family: var(--font-body);
+}
