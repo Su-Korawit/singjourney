@@ -10,7 +10,7 @@ vi.mock("next/navigation", () => ({
 
 afterEach(() => cleanup());
 
-describe("EventsPage — markets + festivals", () => {
+describe("EventsPage: markets + festivals", () => {
   it("renders ตลาด/ของกินท้องถิ่น section", () => {
     render(<EventsPage />);
     expect(screen.getByText(/ตลาด\/ของกินท้องถิ่น/)).toBeInTheDocument();
