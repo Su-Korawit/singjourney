@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { createServerClient } from "@/lib/supabase/server";
 import { generatePlans } from "@/lib/ai/planner";
-import type { UserProfile, Place } from "@/lib/types";
+import { buildLocalPlans } from "@/lib/ai/localPlanner";
+import { PLACES } from "@/lib/data/places";
+import type { UserProfile } from "@/lib/types";
 
 type PlanRequestBody = UserProfile & {
   eventContext?: string;
@@ -9,14 +10,11 @@ type PlanRequestBody = UserProfile & {
 
 export async function POST(req: Request) {
   const { eventContext, ...profile } = (await req.json()) as PlanRequestBody;
-  const supabase = createServerClient();
-  const { data, error } = await supabase.from("places").select("*");
-  if (error)
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  const plans = await generatePlans(
-    profile,
-    (data ?? []) as Place[],
-    eventContext,
-  );
+
+  if (!process.env.GEMINI_API_KEY) {
+    return NextResponse.json(buildLocalPlans(profile, PLACES));
+  }
+
+  const plans = await generatePlans(profile, PLACES, eventContext);
   return NextResponse.json(plans);
 }
