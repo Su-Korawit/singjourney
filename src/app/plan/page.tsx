@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ProfileQuiz } from "@/components/planner/ProfileQuiz";
 import { PlanCard } from "@/components/planner/PlanCard";
 import { ShowcasePlanCard } from "@/components/planner/ShowcasePlanCard";
+import { MaeLaFish } from "@/components/brand/MaeLaFish";
 import { getShowcasePlans } from "@/lib/demo/showcase";
 import { eventById } from "@/lib/data/events";
 import { placeById } from "@/lib/data/places";
@@ -83,7 +84,8 @@ function PlanPageContent() {
       )}
       {loading && (
         <div className="mt-5 rounded-card border border-clay/10 bg-rice/85 p-5 shadow-[0_18px_48px_rgba(92,42,30,0.12)]">
-          <p className="font-head text-sm font-bold text-clay-deep">
+          <p className="flex items-center gap-2 font-head text-sm font-bold text-clay-deep">
+            <MaeLaFish className="h-5 w-auto animate-pulse text-gold" />
             AI กำลังวางแผน...
           </p>
           <div className="mt-4 space-y-3">
@@ -102,16 +104,31 @@ function PlanPageContent() {
       )}
       {!aiPlans && !loading && (
         <>
-          <div className="flex flex-col gap-5">
-            {SHOWCASE_PLANS.map((plan) => (
-              <ShowcasePlanCard key={plan.id} plan={plan} />
-            ))}
-          </div>
-          <div className="mt-8">
+          {!anchorEvent && (
+            <div className="mb-6">
+              <p className="flex items-center gap-2 font-head text-xs font-bold uppercase tracking-[0.24em] text-gold">
+                <MaeLaFish className="h-4 w-auto" />
+                ขั้นที่ 1
+              </p>
+              <h1 className="mt-1 font-display text-3xl text-clay-deep sm:text-4xl">
+                ตอบ 3 ข้อ ให้ AI จัดทริปสิงห์บุรีให้คุณ
+              </h1>
+              <p className="mt-2 text-sm leading-6 text-clay-deep/70">
+                บอกสไตล์การเที่ยวสั้นๆ แล้วเลือกแผนที่ถูกใจ เราจะส่งต่อขึ้น Roadmap
+                บนแผนที่ให้ทันที
+              </p>
+            </div>
+          )}
+          <ProfileQuiz onComplete={onComplete} />
+          <div className="mt-10">
             <p className="mb-4 font-head text-xs font-bold uppercase tracking-[0.24em] text-gold">
-              สร้างแผนส่วนตัว
+              หรือดูแผนตัวอย่างที่จัดไว้แล้ว
             </p>
-            <ProfileQuiz onComplete={onComplete} />
+            <div className="flex flex-col gap-5">
+              {SHOWCASE_PLANS.map((plan) => (
+                <ShowcasePlanCard key={plan.id} plan={plan} />
+              ))}
+            </div>
           </div>
         </>
       )}
