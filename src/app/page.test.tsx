@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { render, screen, cleanup } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Home from "./page";
 
 vi.mock("next/navigation", () => ({
@@ -10,6 +10,13 @@ vi.mock("next/navigation", () => ({
 afterEach(cleanup);
 
 describe("Home", () => {
+  beforeEach(() => {
+    vi.setSystemTime(new Date("2026-06-06T02:00:00Z"));
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("presents the Bang Rachan hero with a real image and events feature card", () => {
     render(<Home />);
 

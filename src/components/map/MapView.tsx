@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
 import { placeById } from "@/lib/data/places";
-import { getPlaceStatus } from "@/lib/demo/showcase";
+import { placeStatus } from "@/lib/status/live";
 import { buildRouteCoordinates } from "@/lib/demo/routeCoordinates";
 import type { RouteFeature } from "@/lib/demo/routeCoordinates";
 import type { PlanStop } from "@/lib/types";
@@ -73,7 +73,7 @@ function createPopupContent({
   title.textContent = `${index + 1}. ${stop.name}`;
   content.appendChild(title);
 
-  const status = getPlaceStatus(stop.place_id);
+  const status = place ? placeStatus(place, new Date()) : null;
   if (status) {
     const badge = document.createElement("span");
     badge.className = "roadmap-popup__status";

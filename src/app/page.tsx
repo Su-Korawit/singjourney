@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { DistrictMap } from "@/components/home/DistrictMap";
 import { PlaceImage } from "@/components/media/PlaceImage";
 import { MaeLaFish, MaeLaSchool } from "@/components/brand/MaeLaFish";
-import { getMarketStatuses, getFestivalStatuses } from "@/lib/demo/showcase";
+import { MARKETS } from "@/lib/data/events";
+import { marketStatus } from "@/lib/status/live";
 
 const journeySteps = [
   {
@@ -67,11 +68,12 @@ const STATUS_LABELS: Record<string, string> = {
 export default function Home() {
   const router = useRouter();
 
-  const markets = getMarketStatuses();
-  const festivals = getFestivalStatuses();
-  const openNow = [...markets, ...festivals].filter(
-    (item) => item.status === "open" || item.status === "closing",
-  );
+  const now = new Date();
+  const openNow = MARKETS.map((m) => ({
+    id: m.id,
+    name: m.name,
+    status: marketStatus(m.schedule, now),
+  })).filter((m) => m.status === "open" || m.status === "closing");
 
   function openDistrict(district: string) {
     router.push(`/map?district=${encodeURIComponent(district)}`);
