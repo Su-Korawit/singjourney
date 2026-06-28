@@ -1,5 +1,6 @@
 import { ItemViewer } from "@/components/items/ItemViewer";
 import { PlaceImage } from "@/components/media/PlaceImage";
+import { MaeLaFish } from "@/components/brand/MaeLaFish";
 import { placeById } from "@/lib/data/places";
 import { TEMPLES } from "@/lib/data/temples";
 import { MyCollection } from "./MyCollection";
@@ -9,7 +10,8 @@ export default function WattsUpPage() {
     <main className="min-h-screen overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
       <section className="mx-auto grid max-w-6xl gap-8 rounded-[2rem] border border-gold/25 bg-rice p-5 shadow-[0_30px_90px_rgba(92,42,30,0.14)] sm:p-8 lg:grid-cols-[1.05fr_0.95fr] lg:p-10">
         <div className="relative z-10 flex flex-col justify-center">
-          <p className="font-head text-sm font-bold uppercase tracking-[0.32em] text-gold">
+          <p className="flex items-center gap-2 font-head text-sm font-bold uppercase tracking-[0.32em] text-gold">
+            <MaeLaFish className="h-4 w-auto" />
             Content Theme · ทำบุญไหว้วัด
           </p>
           <h1 className="mt-4 font-display text-5xl leading-tight text-clay-deep sm:text-6xl lg:text-7xl">

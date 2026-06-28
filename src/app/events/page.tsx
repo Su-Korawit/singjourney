@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { EVENTS, MARKETS } from "@/lib/data/events";
 import { EventCard } from "@/components/events/EventCard";
 import { MarketCard } from "@/components/events/MarketCard";
+import { MaeLaFish } from "@/components/brand/MaeLaFish";
 import { getMarketStatuses } from "@/lib/demo/showcase";
 
 export default function EventsPage() {
@@ -17,7 +18,8 @@ export default function EventsPage() {
   return (
     <main className="min-h-screen px-4 py-10 sm:px-6 lg:px-8">
       <section className="mx-auto max-w-6xl">
-        <p className="font-head text-sm font-semibold uppercase tracking-[0.3em] text-gold">
+        <p className="flex items-center gap-2 font-head text-sm font-semibold uppercase tracking-[0.3em] text-gold">
+          <MaeLaFish className="h-4 w-auto" />
           Event &rarr; Destination
         </p>
         <h1 className="mt-3 font-display text-5xl leading-tight text-clay-deep sm:text-6xl">
