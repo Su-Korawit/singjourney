@@ -6,9 +6,9 @@ import { StopList } from "@/components/planner/StopList";
 import { ItemViewer } from "@/components/items/ItemViewer";
 import { placeById } from "@/lib/data/places";
 import { orderStopsByProximity } from "@/lib/route/geo";
-import { createBrowserClient } from "@/lib/supabase/client";
 import type { Item3D, PlanStop } from "@/lib/types";
 import { getShowcaseRoadmap } from "@/lib/demo/showcase";
+import { getRewardPlaceIds } from "@/lib/data/items";
 
 type CheckinModalState = "awarded" | "duplicate" | "empty" | null;
 
@@ -32,20 +32,7 @@ export default function MapPage() {
   const [rewardPlaceIds, setRewardPlaceIds] = useState<string[]>([]);
 
   useEffect(() => {
-    createBrowserClient()
-      .from("items_3d")
-      .select("place_id")
-      .then(({ data }) => {
-        if (!data) return;
-        const ids = [
-          ...new Set(
-            data
-              .map((row) => row.place_id)
-              .filter((id): id is string => id != null),
-          ),
-        ];
-        setRewardPlaceIds(ids);
-      });
+    setRewardPlaceIds(getRewardPlaceIds());
   }, []);
 
   useEffect(() => {
@@ -72,26 +59,34 @@ export default function MapPage() {
         body: JSON.stringify({ place_id: placeId }),
       });
       const body = await res.json();
-      if (body.awarded && body.item) {
-        try {
-          const raw = localStorage.getItem("sj_items");
-          const list: Item3D[] = raw ? JSON.parse(raw) : [];
-          if (!list.some((item) => item.id === body.item.id)) {
-            localStorage.setItem("sj_items", JSON.stringify([...list, body.item]));
-          }
-        } catch {
-          /* Collection persistence should not block the check-in reveal. */
-        }
-        setModalMsg("รับไอเทมสำเร็จ!");
-        setModalItem(body.item);
-        setModalState("awarded");
-      } else if (body.item) {
-        setModalMsg("คุณมีไอเทมนี้แล้ว");
-        setModalItem(body.item);
-        setModalState("duplicate");
-      } else {
+      const item: Item3D | null = body.item ?? null;
+
+      if (!item) {
         setModalMsg("ไม่มีไอเทมที่จุดนี้");
         setModalState("empty");
+        return;
+      }
+
+      let alreadyOwned = false;
+      try {
+        const raw = localStorage.getItem("sj_items");
+        const list: Item3D[] = raw ? JSON.parse(raw) : [];
+        alreadyOwned = list.some((owned) => owned.id === item.id);
+        if (!alreadyOwned) {
+          localStorage.setItem("sj_items", JSON.stringify([...list, item]));
+        }
+      } catch {
+        /* Collection persistence should not block the check-in reveal. */
+      }
+
+      if (alreadyOwned) {
+        setModalMsg("คุณมีไอเทมนี้แล้ว");
+        setModalItem(item);
+        setModalState("duplicate");
+      } else {
+        setModalMsg("รับไอเทมสำเร็จ!");
+        setModalItem(item);
+        setModalState("awarded");
       }
     } finally {
       setCheckingIn(null);
