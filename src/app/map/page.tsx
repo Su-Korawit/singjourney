@@ -9,6 +9,7 @@ import { orderStopsByProximity } from "@/lib/route/geo";
 import type { Item3D, PlanStop } from "@/lib/types";
 import { getShowcaseRoadmap } from "@/lib/demo/showcase";
 import { getRewardPlaceIds } from "@/lib/data/items";
+import { addTrip, type SavedTrip } from "@/lib/trips/storage";
 
 type CheckinModalState = "awarded" | "duplicate" | "empty" | null;
 
@@ -30,6 +31,7 @@ export default function MapPage() {
   const [couponUsed, setCouponUsed] = useState(false);
   const [checkingIn, setCheckingIn] = useState<string | null>(null);
   const [rewardPlaceIds, setRewardPlaceIds] = useState<string[]>([]);
+  const [savedNote, setSavedNote] = useState<string | null>(null);
 
   useEffect(() => {
     setRewardPlaceIds(getRewardPlaceIds());
@@ -93,6 +95,23 @@ export default function MapPage() {
     }
   }
 
+  function saveTrip() {
+    try {
+      const raw = localStorage.getItem("sj_trips");
+      const list: SavedTrip[] = raw ? JSON.parse(raw) : [];
+      const trip: SavedTrip = {
+        id: crypto.randomUUID(),
+        title: `ทริปสิงห์บุรี ${stops.length} จุด`,
+        savedAt: new Date().toISOString(),
+        stops,
+      };
+      localStorage.setItem("sj_trips", JSON.stringify(addTrip(list, trip)));
+      setSavedNote("บันทึกทริปแล้ว ดูได้ที่ ทริปของฉัน");
+    } catch {
+      setSavedNote("บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง");
+    }
+  }
+
   return (
     <main className="mx-auto grid w-full max-w-6xl gap-5 px-4 py-5 sm:px-6 md:grid-cols-[360px_minmax(0,1fr)] md:gap-6 md:py-8">
       <div className="sticky top-4 z-10 -mx-4 sm:mx-0 md:order-2 md:top-6">
@@ -118,6 +137,18 @@ export default function MapPage() {
         >
           จัดเส้นทางอัตโนมัติ
         </button>
+        <button
+          type="button"
+          onClick={saveTrip}
+          className="mb-2 w-full rounded-full border border-gold/40 bg-rice px-4 py-2 font-head font-bold text-clay-deep transition hover:-translate-y-0.5 hover:border-gold"
+        >
+          บันทึกทริปนี้
+        </button>
+        {savedNote && (
+          <p className="mb-3 text-center font-head text-xs font-bold text-gold">
+            {savedNote}
+          </p>
+        )}
         <StopList stops={stops} onReorder={setStops} />
         <ul className="mt-4 flex flex-col gap-2">
           {stops.map((s) => {
