@@ -4,16 +4,12 @@ import { EVENTS, MARKETS } from "@/lib/data/events";
 import { EventCard } from "@/components/events/EventCard";
 import { MarketCard } from "@/components/events/MarketCard";
 import { MaeLaFish } from "@/components/brand/MaeLaFish";
-import { getMarketStatuses } from "@/lib/demo/showcase";
+import { marketStatus } from "@/lib/status/live";
 
 export default function EventsPage() {
   const router = useRouter();
   const sorted = [...EVENTS].sort((a, b) => a.month - b.month);
-
-  const marketStatuses = getMarketStatuses();
-  function getMarketStatus(id: string): "open" | "closing" | "closed" {
-    return marketStatuses.find((s) => s.id === id)?.status ?? "open";
-  }
+  const now = new Date();
 
   return (
     <main className="min-h-screen px-4 py-10 sm:px-6 lg:px-8">
@@ -45,7 +41,7 @@ export default function EventsPage() {
           <div className="flex flex-wrap items-baseline gap-3">
             <h2 className="font-display text-3xl text-clay-deep">ตลาด/ของกินท้องถิ่น</h2>
             <p className="text-sm text-clay-deep/60">
-              สถานะอัปเดตโดยเจ้าของร้านผ่าน LINE OA
+              สถานะคำนวณอัตโนมัติจากเวลาทำการ
             </p>
           </div>
           <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -53,7 +49,7 @@ export default function EventsPage() {
               <MarketCard
                 key={m.id}
                 market={m}
-                status={getMarketStatus(m.id)}
+                status={marketStatus(m.schedule, now)}
                 onPlan={() => router.push("/plan")}
               />
             ))}

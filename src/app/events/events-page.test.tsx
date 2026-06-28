@@ -21,9 +21,9 @@ describe("EventsPage: markets + festivals", () => {
     expect(screen.getByText(/เทศกาลประจำปี/)).toBeInTheDocument();
   });
 
-  it("shows LINE OA attribution text", () => {
+  it("shows automatic status attribution text", () => {
     render(<EventsPage />);
-    expect(screen.getByText(/LINE OA/)).toBeInTheDocument();
+    expect(screen.getByText(/คำนวณอัตโนมัติจากเวลาทำการ/)).toBeInTheDocument();
   });
 
   it("has no em-dash or en-dash in rendered output", () => {
