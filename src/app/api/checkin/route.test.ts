@@ -1,52 +1,27 @@
-import { describe, it, expect, vi } from "vitest";
-
-const item = {
-  id: "s1",
-  name: "พระนอนจิ๋ว",
-  type: "souvenir",
-  model_url: "/m.glb",
-  place_id: "1",
-  is_consumable: false,
-};
-
-vi.mock("@/lib/supabase/server", () => ({
-  createServerClient: () => ({
-    from: (table: string) => {
-      if (table === "items_3d") {
-        return {
-          select: () => ({
-            eq: () => ({ data: [item], error: null }),
-          }),
-        };
-      }
-      if (table === "user_items") {
-        return {
-          select: () => ({
-            eq: () => ({ data: [], error: null }),
-          }),
-          insert: () => ({ error: null }),
-        };
-      }
-      if (table === "checkins") {
-        return { insert: () => ({ error: null }) };
-      }
-      return { select: () => ({ eq: () => ({ data: [], error: null }) }) };
-    },
-  }),
-}));
-
+import { describe, it, expect } from "vitest";
 import { POST } from "./route";
 
 describe("POST /api/checkin", () => {
-  it("เช็คอินครั้งแรกได้ไอเทม", async () => {
+  it("คืนไอเทมของสถานที่ที่มีรางวัล", async () => {
     const req = new Request("http://x", {
       method: "POST",
-      body: JSON.stringify({ place_id: "1" }),
+      body: JSON.stringify({ place_id: "p1" }),
     });
     const res = await POST(req);
     const body = await res.json();
     expect(res.status).toBe(200);
-    expect(body.awarded).toBe(true);
     expect(body.item.id).toBe("s1");
+    expect(body.item.name).toBe("พระนอนจิ๋ว");
+  });
+
+  it("คืน item เป็น null เมื่อสถานที่ไม่มีรางวัล", async () => {
+    const req = new Request("http://x", {
+      method: "POST",
+      body: JSON.stringify({ place_id: "p2" }),
+    });
+    const res = await POST(req);
+    const body = await res.json();
+    expect(res.status).toBe(200);
+    expect(body.item).toBeNull();
   });
 });
