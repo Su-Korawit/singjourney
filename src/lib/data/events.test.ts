@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { EVENTS, eventById } from "./events";
+import { EVENTS, eventById, MARKETS } from "./events";
 import { placeById } from "./places";
 
 describe("EVENTS data", () => {
@@ -23,5 +23,21 @@ describe("EVENTS data", () => {
   it("eventById คืนถูกตัว", () => {
     expect(eventById("e1")?.name).toContain("บางระจัน");
     expect(eventById("zzz")).toBeUndefined();
+  });
+});
+
+describe("MARKET schedule structured hours", () => {
+  it("ตลาดทุกแห่งมี schedule ที่ใช้คำนวณสถานะได้", () => {
+    for (const m of MARKETS) {
+      expect(Array.isArray(m.schedule.days)).toBe(true);
+      expect(m.schedule.days.length).toBeGreaterThan(0);
+      expect(m.schedule.open).toMatch(/^\d{2}:\d{2}$/);
+      expect(m.schedule.close).toMatch(/^\d{2}:\d{2}$/);
+    }
+  });
+
+  it("ตลาดบ้านระจันเปิดเสาร์-อาทิตย์ 06:00-12:00", () => {
+    const m = MARKETS.find((x) => x.id === "market-banrachan")!;
+    expect(m.schedule).toEqual({ days: [6, 0], open: "06:00", close: "12:00" });
   });
 });

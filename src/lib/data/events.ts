@@ -1,4 +1,5 @@
 import type { SingEvent } from "@/lib/types";
+import type { MarketHours } from "@/lib/status/live";
 
 export type Market = {
   id: string;
@@ -6,6 +7,7 @@ export type Market = {
   district: string;
   description: string;
   hours: string;
+  schedule: MarketHours;
   image_url: string | null;
 };
 
@@ -16,6 +18,7 @@ export const MARKETS: Market[] = [
     district: "บ้านระจัน",
     description: "ตลาดวัฒนธรรมย้อนยุค ของกิน ของฝาก บรรยากาศชุมชนแท้",
     hours: "เสาร์-อาทิตย์ 06:00-12:00 น.",
+    schedule: { days: [6, 0], open: "06:00", close: "12:00" },
     image_url: null,
   },
   {
@@ -24,6 +27,7 @@ export const MARKETS: Market[] = [
     district: "ค่ายบางระจัน",
     description: "ปลาแม่ลาสดจากแม่น้ำ อาหารพื้นบ้านสิงห์บุรีแท้",
     hours: "ทุกวัน 05:00-10:00 น.",
+    schedule: { days: [0, 1, 2, 3, 4, 5, 6], open: "05:00", close: "10:00" },
     image_url: null,
   },
   {
@@ -32,6 +36,7 @@ export const MARKETS: Market[] = [
     district: "เมืองสิงห์บุรี",
     description: "ตลาดสดใจกลางเมือง ผักสด ผลไม้ อาหารท้องถิ่นหลากหลาย",
     hours: "ทุกวัน 04:00-09:00 น.",
+    schedule: { days: [0, 1, 2, 3, 4, 5, 6], open: "04:00", close: "09:00" },
     image_url: null,
   },
   {
@@ -40,6 +45,7 @@ export const MARKETS: Market[] = [
     district: "เมืองสิงห์บุรี",
     description: "ถนนคนเดินย่านใจกลางเมือง อาหารท้องถิ่น ศิลปะ ของฝาก",
     hours: "ศุกร์-อาทิตย์ 17:00-21:00 น.",
+    schedule: { days: [5, 6, 0], open: "17:00", close: "21:00" },
     image_url: null,
   },
 ];
