@@ -8,6 +8,7 @@ const navigationItems = [
   { href: "/plan", label: "วางแผน" },
   { href: "/map", label: "Roadmap" },
   { href: "/watts-up", label: "Watt's Up!" },
+  { href: "/trips", label: "ทริปของฉัน" },
 ];
 
 export function Header() {
@@ -34,13 +35,6 @@ export function Header() {
             </a>
           ))}
         </nav>
-
-        <a
-          href="/api/auth/line/login"
-          className="hidden rounded-full bg-[#06C755] px-4 py-2 text-sm font-bold text-white transition hover:brightness-95 md:inline-block"
-        >
-          เข้าสู่ระบบด้วย LINE
-        </a>
 
         <button
           type="button"
@@ -76,12 +70,6 @@ export function Header() {
               {item.label}
             </a>
           ))}
-          <a
-            href="/api/auth/line/login"
-            className="rounded-card bg-[#06C755] px-3 py-2 text-center text-sm font-bold text-white"
-          >
-            เข้าสู่ระบบด้วย LINE
-          </a>
         </div>
       </nav>
     </header>

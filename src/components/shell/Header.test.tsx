@@ -35,6 +35,12 @@ describe("Header", () => {
       "href",
       "/watts-up",
     );
+    expect(
+      screen.getByRole("link", { name: "ทริปของฉัน" }),
+    ).toHaveAttribute("href", "/trips");
+    expect(
+      screen.queryByRole("link", { name: /LINE/ }),
+    ).not.toBeInTheDocument();
   });
 
   it("toggles the mobile menu from the hamburger button", async () => {
