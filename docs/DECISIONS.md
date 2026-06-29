@@ -13,7 +13,7 @@
 2. **กลุ่มประกวด: กลุ่มที่ 5** การท่องเที่ยวและเศรษฐกิจสร้างสรรค์
 3. **ระดับ: ม.ปลายเท่านั้น** (เงินรางวัลชนะเลิศ 50,000 / รอง 1 = 40,000 / รอง 2 = 30,000)
 4. **คืนนี้ทำเอกสารส่งก่อน** + เขียน Implementation Plan เตรียม build เดโมทีหลัง
-5. **Stack:** Next.js + MapLibre + model-viewer + Claude API (opus-4-8) + Supabase + LINE Login
+5. **Stack:** Next.js + MapLibre + model-viewer + Gemini API (gemini-2.5-flash) + Supabase + LINE Login  _(เดิมวางแผนใช้ Claude opus-4-8; โค้ดจริงเปลี่ยนเป็น Gemini — ยึดตามโค้ด `src/lib/ai/planner.ts`)_
 6. **ไอเทม 3D = โมเดลหมุนได้ในเว็บ** (ไม่ทำ AR ในเดโม)
 7. **ตัดการจองโรงแรม + โค้ดส่วนลดจริงออกจากเดโม** (แสดงเป็น mock UI)
 8. **เพิ่มระบบ Real-time Info Sync** — ดึงเวลาเปิด-ปิดจริงผ่าน Google Places API, cache ใน Supabase (sync วันละ 1–2 ครั้งผ่าน Cron), ใช้กรองสถานที่ใน AI planner + แสดงป้ายสถานะ — key อยู่ฝั่ง server เท่านั้น

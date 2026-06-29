@@ -4,6 +4,8 @@
 Scope เดโม: **AI วางแผนทริป + Map roadmap (ลากวาง) + ข้อมูลเปิด-ปิดจริงเรียลไทม์ + Check-in ไอเทม 3D + Watt's Up!**
 ตัดออกจากเดโม: การจองโรงแรม + โค้ดส่วนลดจริง (แสดงเป็น mock/UI เท่านั้น)
 
+> ⚠️ **หมายเหตุแก้ไขภายหลัง (2026-06-29):** เอกสารนี้เป็นแผนเดิม รายละเอียด AI ด้านล่างเขียนอิง**Claude API** แต่**โค้ดจริงเปลี่ยนไปใช้ Google Gemini 2.5 Flash** (`@google/genai`, env `GEMINI_API_KEY`, ที่ `src/lib/ai/planner.ts`) — เมธอด/พารามิเตอร์ที่เป็นของ Claude (`messages.create`, `output_config.format`, adaptive thinking) ไม่ตรงกับ Gemini ให้ยึดตามโค้ดจริง · และ **ยังไม่ได้ทำ PWA** (ไม่มี manifest/service worker) เว็บเป็น responsive web app ปกติ
+
 ---
 
 ## 1. Tech Stack (ตัดสินใจแล้ว)
@@ -13,7 +15,7 @@ Scope เดโม: **AI วางแผนทริป + Map roadmap (ลาก
 | Frontend | **Next.js (App Router) + React + TypeScript + Tailwind CSS** | build เร็ว, deploy ง่าย, PWA ได้ |
 | แผนที่ + เส้นทาง | **MapLibre GL JS** + free tiles | โอเพนซอร์ส วาด route/marker บนแผนที่จริงได้ ไม่มีค่า API |
 | 3D Item | **`<model-viewer>`** (Google) | โหลดโมเดล glTF/GLB หมุนได้ในเว็บ น้ำหนักเบา ทำง่ายสุด |
-| AI Planner | **Claude API** (`claude-opus-4-8`) | วิเคราะห์โปรไฟล์ + วางแผน, ใช้ structured output คืน JSON |
+| AI Planner | **Gemini API** (`gemini-2.5-flash`) — _แผนเดิมระบุ Claude opus-4-8_ | วิเคราะห์โปรไฟล์ + วางแผน, ใช้ structured output คืน JSON |
 | ข้อมูลเปิด-ปิดจริง | **Google Places API** (Place Details) | ดึง `opening_hours` + `business_status` จริงของแต่ละสถานที่ เพื่อความแม่นยำในการเดินทาง |
 | Auth / DB / Storage | **Supabase** + **LINE Login** | Postgres + Auth + Storage ครบ, ตรงกับ mockup ที่มีปุ่ม LINE |
 | Drag & Drop | **dnd-kit** | ลากวางลำดับสถานที่ลื่นไหล |

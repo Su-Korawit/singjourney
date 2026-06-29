@@ -13,4 +13,4 @@
 
 ## Tech Stack (แผน)
 
-Next.js · MapLibre · model-viewer · Claude API · Supabase · LINE Login
+Next.js · MapLibre · model-viewer · Gemini API (Google Gemini 2.5 Flash) · Supabase · LINE Login

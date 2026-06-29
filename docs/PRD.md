@@ -66,7 +66,7 @@
 ## 4. ฟีเจอร์หลัก
 
 ### 4.1 AI Planning
-- ใช้ Claude AI API วิเคราะห์ไลฟ์สไตล์ผู้ใช้
+- ใช้ Gemini AI API (Google Gemini 2.5 Flash) วิเคราะห์ไลฟ์สไตล์ผู้ใช้
 - สร้างแผนท่องเที่ยวหลายรูปแบบ (3 showcase plans)
 - คืนผลพร้อมช่วงค่าใช้จ่ายโดยประมาณต่อคน
 
@@ -108,7 +108,7 @@
 | UI/Styling | Tailwind CSS, Chonburi/Mitr/Sarabun fonts |
 | แผนที่ | MapLibre GL JS |
 | โมเดล 3D | `<model-viewer>` web component |
-| AI | Claude API (Anthropic) |
+| AI | Gemini API (Google Gemini 2.5 Flash) |
 | Auth | LINE Login (OAuth 2.0) |
 | Messaging | LINE Messaging API (OA) |
 | Open/Close data | Google Places API + LINE OA community reports |
